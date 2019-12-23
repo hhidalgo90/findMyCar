@@ -1,0 +1,7 @@
+{
+  "name": "gpsAuto",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
