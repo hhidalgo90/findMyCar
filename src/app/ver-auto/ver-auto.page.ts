@@ -29,17 +29,34 @@ export class VerAutoPage implements OnInit {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
  
-      //this.getAddressFromCoords(resp.coords.latitude, resp.coords.longitude);
  
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
- 
-      this.map.addListener('tilesloaded', () => {
-        console.log('accuracy',this.map);
-        //this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng())
-      });
- 
+
+      this.map.addListener('click',(event) => {       
+        console.log(event.latLng.lat());
+        console.log(event.latLng.lng());
+        this.agregarMarcador(event.latLng.lat(), event.latLng.lng());
+    });
+
     }).catch((error) => {
       console.log('Error getting location', error);
     });
   } 
+
+  agregarMarcador(lat,long){
+    console.log("agregar marcador");
+    console.log(lat , long);
+    
+    
+    let image = '../../assets/icon/car.png';
+    var marker = new google.maps.Marker({
+      map: this.map,
+      position: {lat: lat , lng: long},
+        title:"Hello World!",
+        icon: image          
+    });
+    console.log("crear marker");      
+    marker.setMap(this.map);
+  }
+
 }
