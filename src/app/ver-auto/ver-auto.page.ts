@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-
+import { ModalController } from '@ionic/angular';
+import { ModalComoLlegarPage } from '../modal-como-llegar/modal-como-llegar.page'
  
 declare var google;
 
@@ -17,10 +18,11 @@ export class VerAutoPage implements OnInit {
   mIubicacion : string;
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
+  rutas : any;
 
 
 
-  constructor(private geolocation: Geolocation,private nativeGeocoder: NativeGeocoder) { }
+  constructor(private geolocation: Geolocation,private nativeGeocoder: NativeGeocoder, public modalController: ModalController) { }
 
   ngOnInit() {
     this.loadMap();
@@ -70,6 +72,8 @@ export class VerAutoPage implements OnInit {
   }
 
   calcRoute() {
+    console.log("calcular ruta");
+    
     //var selectedMode = document.getElementById('mode').value;
     var request = {
         origin: this.mIubicacion,
@@ -81,11 +85,28 @@ export class VerAutoPage implements OnInit {
     };
     this.directionsService.route(request, (response, status) => {
       if (status === 'OK') {
+        console.log(response.routes[0].legs[0].steps[0].instructions);
+        //console.log(response.routes.legs.steps);
+        this.rutas = response.routes[0];
+        console.log(this.rutas);
+        
+        
         this.directionsRenderer.setDirections(response)
       } else {
         console.log('Directions request failed due to ' + status)
       }
     })
+  }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: ModalComoLlegarPage,
+      componentProps: {
+        'rutas': this.rutas,
+        'travelMode': 'WALKING'
+      }
+    });
+    return await modal.present();
   }
 
 }

@@ -11,7 +11,11 @@ const routes: Routes = [
     loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule)
   },
   { path: 'menuApp', component : MenuPage },
-  { path: 'verAuto', component : VerAutoPage }
+  { path: 'verAuto', component : VerAutoPage },
+  {
+    path: 'modal-como-llegar',
+    loadChildren: () => import('./modal-como-llegar/modal-como-llegar.module').then( m => m.ModalComoLlegarPageModule)
+  }
 ];
 
 @NgModule({

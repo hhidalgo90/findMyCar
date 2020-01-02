@@ -13,10 +13,11 @@ import { VerAutoPage } from './ver-auto/ver-auto.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { FormsModule } from '@angular/forms';
+import { ModalComoLlegarPage } from './modal-como-llegar/modal-como-llegar.page';
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage],
-  entryComponents: [],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage],
+  entryComponents: [ModalComoLlegarPage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule ],
   providers: [
     StatusBar,
