@@ -9,6 +9,36 @@
 </ion-header>
 
 <ion-content>
-  <div #map id="map2"></div>
-  <div id="directionsPanel"></div>
+<ion-grid>
+
+  <ion-row>
+    <ion-col>
+      <h4>{{warnings}}</h4>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <h4>{{direccionInicio}}</h4>
+    </ion-col>
+    <ion-col>
+      <h6>{{distancia}} , {{tiempo}}</h6>
+    </ion-col>
+  </ion-row>
+  <div *ngFor="let paso of pasos">
+  <ion-row>
+    <ion-col>
+      {{paso.instructions}}
+    </ion-col>
+    <ion-col>
+      <h6>{{paso.distance.text}} , {{paso.duration.text}}</h6>
+    </ion-col>
+  </ion-row>
+  </div>
+  <ion-row>
+    <ion-col>
+      <h4>{{direccionFin}}</h4>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
 </ion-content>

@@ -104,7 +104,8 @@ export class VerAutoPage implements OnInit {
       componentProps: {
         'rutas': this.rutas,
         'travelMode': 'WALKING'
-      }
+      },
+      mode: 'ios'
     });
     return await modal.present();
   }
