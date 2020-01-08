@@ -46,8 +46,7 @@
   <ion-row >    
     <ion-col size="6">
     <ion-item-divider color="secondary">
-    <ion-label text-wrap>
-      {{paso.instructions}}
+    <ion-label text-wrap [innerHTML]="paso.instructions">
     </ion-label>
   </ion-item-divider>  
   </ion-col>
