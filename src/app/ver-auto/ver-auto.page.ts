@@ -5,6 +5,100 @@ import { ModalController } from '@ionic/angular';
 import { ModalComoLlegarPage } from '../modal-como-llegar/modal-como-llegar.page'
  
 declare var google;
+const estiloMapa : any = [
+  {
+      "featureType": "landscape",
+      "stylers": [
+          {
+              "saturation": -100
+          },
+          {
+              "lightness": 60
+          }
+      ]
+  },
+  {
+      "featureType": "road.local",
+      "stylers": [
+          {
+              "saturation": -100
+          },
+          {
+              "lightness": 40
+          },
+          {
+              "visibility": "on"
+          }
+      ]
+  },
+  {
+      "featureType": "transit",
+      "stylers": [
+          {
+              "saturation": -100
+          },
+          {
+              "visibility": "simplified"
+          }
+      ]
+  },
+  {
+      "featureType": "administrative.province",
+      "stylers": [
+          {
+              "visibility": "off"
+          }
+      ]
+  },
+  {
+      "featureType": "water",
+      "stylers": [
+          {
+              "visibility": "on"
+          },
+          {
+              "lightness": 30
+          }
+      ]
+  },
+  {
+      "featureType": "road.highway",
+      "elementType": "geometry.fill",
+      "stylers": [
+          {
+              "color": "#ef8c25"
+          },
+          {
+              "lightness": 40
+          }
+      ]
+  },
+  {
+      "featureType": "road.highway",
+      "elementType": "geometry.stroke",
+      "stylers": [
+          {
+              "visibility": "off"
+          }
+      ]
+  },
+  {
+      "featureType": "poi.park",
+      "elementType": "geometry.fill",
+      "stylers": [
+          {
+              "color": "#b6c54c"
+          },
+          {
+              "lightness": 40
+          },
+          {
+              "saturation": -40
+          }
+      ]
+  },
+  {}
+]
 
 @Component({
   selector: 'app-ver-auto',
@@ -19,10 +113,18 @@ export class VerAutoPage implements OnInit {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
   rutas : any;
+  mostrarBtnCalcular : boolean;
+  mostrarBtnLlegar : boolean = false;
+  tipoMovilizacion : string;
+  mostrarMarcador : boolean = true;
+  existeMarcador : boolean;
+  marker : any;
 
-
-
-  constructor(private geolocation: Geolocation,private nativeGeocoder: NativeGeocoder, public modalController: ModalController) { }
+  constructor(private geolocation: Geolocation,private nativeGeocoder: NativeGeocoder, public modalController: ModalController) { 
+    this.mostrarBtnLlegar  = false;
+    this.mostrarMarcador   = true;
+    this.existeMarcador = false;
+  }
 
   ngOnInit() {
     this.loadMap();
@@ -35,7 +137,8 @@ export class VerAutoPage implements OnInit {
       let mapOptions = {
         center: latLng,
         zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles : estiloMapa
       }
       this.mIubicacion = latLng;
  
@@ -46,7 +149,11 @@ export class VerAutoPage implements OnInit {
       this.map.addListener('click',(event) => {       
         console.log(event.latLng.lat());
         console.log(event.latLng.lng());
-        this.agregarMarcador(event.latLng.lat(), event.latLng.lng());
+        if(!this.existeMarcador){
+          this.agregarMarcador(event.latLng.lat(), event.latLng.lng());
+        }  
+        //AGREGAR CONDICION PARA QUE SE OCULTE CUANDO NO ES CLIC EN MARCADOR
+        //this.map.infowindow().close();
     });
 
     }).catch((error) => {
@@ -60,19 +167,43 @@ export class VerAutoPage implements OnInit {
     var ubicacionMarcador = new google.maps.LatLng(lat, long);
     
     let image = '../../assets/icon/car.png';
-    var marker = new google.maps.Marker({
+    this.marker = new google.maps.Marker({
       map: this.map,
       position: {lat: lat , lng: long},
         title:"Hello World!",
-        icon: image          
+        icon: image,
+        animation: google.maps.Animation.DROP,
+        draggable: true 
     });
     console.log("crear marker");    
-    this.ubicacionAuto = ubicacionMarcador;
-    marker.setMap(this.map);
+    this.ubicacionAuto = ubicacionMarcador;   
+    
+    var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Tu auto se encuentra aqui!</h1>'+
+      '<div id="bodyContent">'+
+      '<p>Haz clic en el boton <b> Como llegar </b> situado mas abajo. <br>' +
+      'Sigue las instrucciones para llegar a la ubicación de tu vehiculo. </p>'+      
+      '</div>'+
+      '</div>';
+
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString
+  });
+  this.marker.addListener('click', function() {
+    infowindow.open(this.map, this.marker);
+  });
+
+  this.existeMarcador = true;
+
+    this.marker.setMap(this.map);
   }
 
-  calcRoute() {
-    console.log("calcular ruta");
+  cambiarRuta() {
+    console.log("calcular ruta" + this.tipoMovilizacion);
+    this.mostrarBtnLlegar = true;
+    this.mostrarMarcador = false;
     
     //var selectedMode = document.getElementById('mode').value;
     var request = {
@@ -81,10 +212,10 @@ export class VerAutoPage implements OnInit {
         // Note that JavaScript allows us to access the constant
         // using square brackets and a string value as its
         // "property."
-        travelMode: google.maps.TravelMode["WALKING"]
+        travelMode: google.maps.TravelMode[this.tipoMovilizacion]
     };
     this.directionsService.route(request, (response, status) => {
-      if (status === 'OK') {
+      if (status === 'OK') {        
         console.log(response.routes[0].legs[0].steps[0].instructions);
         //console.log(response.routes.legs.steps);
         this.rutas = response.routes[0];

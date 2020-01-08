@@ -8,7 +8,7 @@
 <ion-content>
  
   <div class="map-wrapper">
-    <div id="map_center">
+    <div id="map_center" *ngIf="mostrarMarcador">
       <img src="../../assets/icon/center_marker.png" />
     </div>
     <div #map id="map"></div>
@@ -16,8 +16,8 @@
   <ion-input type="hidden" [(ngModel)]="ubicacionAuto" inputmode="text"></ion-input>
   <ion-input type="hidden" [(ngModel)]="mIubicacion" inputmode="text"></ion-input>
   
-  <ion-grid style="height: 100%;">
-  <ion-row style="height: 50%;">
+  <ion-grid style="height: 30%;">
+  <ion-row style="height: 20%;">
     <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary">
       <ion-segment-button value="WALKING">
         <ion-icon name="walk"></ion-icon>
@@ -28,8 +28,8 @@
     </ion-segment>
   </ion-row>
   <ion-row>
-    <ion-col style="height: 50%;" text-end>
-      <ion-button (click)="calcRoute()" shape="round" fill="outline">
+    <ion-col style="height: 10%;" text-end>
+      <ion-button (click)="calcRoute()" shape="round" fill="outline" *ngIf="mostrarBtnCalcular">
         <ion-icon slot="start" name="locate"></ion-icon>
         Calcular Ruta
       </ion-button>
@@ -37,12 +37,11 @@
         <ion-icon slot="start" name="locate"></ion-icon>
         Centrar
       </ion-button>
-      <ion-button (click)="presentModal()" shape="round" fill="outline">
+      <ion-button (click)="presentModal()" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
         <ion-icon slot="start" name="locate"></ion-icon>
         Como llegar
       </ion-button>
     </ion-col>
   </ion-row>
   </ion-grid>
-  <div id="directionsPanel"></div>
 </ion-content>
