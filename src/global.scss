@@ -24,3 +24,10 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+    //estilos del modal
+    .modalClass .modal-wrapper {
+        width: 95%;
+        height: 70%;
+        border-radius: 5%;
+       }

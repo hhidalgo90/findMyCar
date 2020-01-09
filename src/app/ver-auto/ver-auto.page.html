@@ -9,7 +9,7 @@
  
   <div class="map-wrapper">
     <div id="map_center" *ngIf="mostrarMarcador">
-      <img src="../../assets/icon/center_marker.png" />
+      <img src="../../assets/icon/car.png" />
     </div>
     <div #map id="map"></div>
   </div>
@@ -36,6 +36,10 @@
       <ion-button (click)="loadMap()" shape="round" fill="outline">
         <ion-icon slot="start" name="locate"></ion-icon>
         Centrar
+      </ion-button>
+      <ion-button (click)="estacionarAuto()" shape="round" fill="outline" *ngIf="mostrarEstacionar">
+        <ion-icon slot="start" name="locate"></ion-icon>
+        Estacioné aquí
       </ion-button>
       <ion-button (click)="presentModal()" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
         <ion-icon slot="start" name="locate"></ion-icon>

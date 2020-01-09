@@ -1,4 +1,12 @@
-#directionsPanel {
-    width:30%;
-    height: 100%;
-  }
+.modal{
+  background-color: rgb(255, 255, 255);
+  height: 50%;
+  top: 20%;
+  position: absolute;
+  border-radius: 95px 95px 95px 95px;
+  -moz-border-radius: 95px 95px 95px 95px;
+  -webkit-border-radius: 95px 95px 95px 95px;    
+  border: 3px solid #290808;
+  text-align: center;
+  
+}
