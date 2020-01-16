@@ -1,15 +1,15 @@
-<ion-header>
+<ion-header padding-top>
   <ion-row>
     <ion-col text-start padding-top>
-      <ion-title>Google Map</ion-title>
+      <ion-title>Estacione su auto</ion-title>
     </ion-col>
   </ion-row>
 </ion-header>
-<ion-content>
+<ion-content padding>
  
   <div class="map-wrapper">
     <div id="map_center" *ngIf="mostrarMarcador">
-      <img src="../../assets/icon/car.png" />
+      <img src="../../assets/icon/pin.png" />
     </div>
     <div #map id="map"></div>
   </div>
@@ -18,7 +18,7 @@
   
   <ion-grid style="height: 30%;">
   <ion-row style="height: 20%;">
-    <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary">
+    <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary" *ngIf="autoEstacionado">
       <ion-segment-button value="WALKING">
         <ion-icon name="walk"></ion-icon>
       </ion-segment-button>
@@ -33,7 +33,7 @@
         <ion-icon slot="start" name="locate"></ion-icon>
         Calcular Ruta
       </ion-button>
-      <ion-button (click)="loadMap()" shape="round" fill="outline">
+      <ion-button (click)="centrarMapa()" shape="round" fill="outline">
         <ion-icon slot="start" name="locate"></ion-icon>
         Centrar
       </ion-button>
@@ -41,7 +41,7 @@
         <ion-icon slot="start" name="locate"></ion-icon>
         Estacioné aquí
       </ion-button>
-      <ion-button (click)="presentModal()" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
+      <ion-button (click)="presentModal()" color="success" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
         <ion-icon slot="start" name="locate"></ion-icon>
         Como llegar
       </ion-button>

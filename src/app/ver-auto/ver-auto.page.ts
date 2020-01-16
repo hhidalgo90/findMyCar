@@ -124,6 +124,7 @@ export class VerAutoPage implements OnInit {
   marker: any;
   imagen: string;
   mostrarEstacionar: boolean;
+  autoEstacionado : boolean;
 
   constructor(
     private geolocation: Geolocation,
@@ -134,6 +135,7 @@ export class VerAutoPage implements OnInit {
     this.mostrarMarcador = true;
     this.existeMarcador = false;
     this.mostrarEstacionar = false;
+    this.autoEstacionado = false;
   }
 
   ngOnInit() {
@@ -164,8 +166,17 @@ export class VerAutoPage implements OnInit {
         this.directionsRenderer.setPanel(
           document.getElementById("directionsPanel")
         );
+
+        console.log("mi ubicacion " + latLng.lat() + "--" + latLng.lng());
+        
         this.imagen = "../../assets/icon/persona.png";
         this.agregarMarcador(latLng.lat(), latLng.lng());
+
+        console.log("ubicacion auto" + this.ubicacionAuto.lat() + "--" + this.ubicacionAuto.lng());      
+        if(this.autoEstacionado){
+          this.imagen = "../../assets/icon/car.png";
+          this.agregarMarcador(this.ubicacionAuto.lat(), this.ubicacionAuto.lng());
+        }
 
         this.map.addListener("click", event => {
           console.log(event.latLng.lat());
@@ -180,15 +191,17 @@ export class VerAutoPage implements OnInit {
 
         this.map.addListener("mouseup", event => {
           console.log("evento mouseup");
-
+        
+          if(!this.autoEstacionado){
           console.log(event.latLng.lat());
           console.log(event.latLng.lng());
-          var ubicacionMarcadorAuto = new google.maps.LatLng(
+          this.ubicacionAuto = new google.maps.LatLng(
             event.latLng.lat(),
             event.latLng.lng()
           );
           this.mostrarEstacionar = true;
-          this.ubicacionAuto = ubicacionMarcadorAuto;
+          }
+
         });
       })
       .catch(error => {
@@ -199,7 +212,7 @@ export class VerAutoPage implements OnInit {
   agregarMarcador(lat, long) {
     console.log("agregar marcador");
     console.log(lat, long);
-    var ubicacionMarcador = new google.maps.LatLng(lat, long);
+    this.ubicacionAuto = new google.maps.LatLng(lat, long);
 
     this.marker = new google.maps.Marker({
       map: this.map,
@@ -207,10 +220,9 @@ export class VerAutoPage implements OnInit {
       title: "Hello World!",
       icon: this.imagen,
       animation: google.maps.Animation.DROP,
-      draggable: true
+      draggable: false
     });
     console.log("crear marker");
-    this.ubicacionAuto = ubicacionMarcador;
 
     var contentString =
       '<div id="content">' +
@@ -279,8 +291,6 @@ export class VerAutoPage implements OnInit {
 
   estacionarAuto() {
     console.log("estacionar auto");
-    var latitud;
-    var longitud;
     this.imagen = "../../assets/icon/car.png";
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode(
@@ -294,5 +304,11 @@ export class VerAutoPage implements OnInit {
       }
     );
     this.mostrarMarcador = false;
+    this.autoEstacionado = true;
+  }
+
+  centrarMapa(){
+    this.map.panTo(this.mIubicacion);
+    this.map.setZoom(15);
   }
 }
