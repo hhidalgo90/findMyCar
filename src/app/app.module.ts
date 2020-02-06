@@ -12,13 +12,14 @@ import { MenuPage } from './menu/menu.page';
 import { VerAutoPage } from './ver-auto/ver-auto.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
-import { FormsModule } from '@angular/forms';
 import { ModalComoLlegarPage } from './modal-como-llegar/modal-como-llegar.page';
+import { ModalRegistresePage } from './modal-registrese/modal-registrese.page';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage],
-  entryComponents: [ModalComoLlegarPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule ],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage],
+  entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule ],
   providers: [
     StatusBar,
     SplashScreen,

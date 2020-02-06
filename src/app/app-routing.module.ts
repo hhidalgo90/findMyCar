@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'modal-como-llegar',
     loadChildren: () => import('./modal-como-llegar/modal-como-llegar.module').then( m => m.ModalComoLlegarPageModule)
+  },
+  {
+    path: 'modal-registrese',
+    loadChildren: () => import('./modal-registrese/modal-registrese.module').then( m => m.ModalRegistresePageModule)
   }
 ];
 

@@ -12,7 +12,109 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-button expand="block" routerLink="/verAuto" routerDirection="root">
-    Ver mi auto
-  </ion-button>
+<div *ngIf="!mostrarOpcionesLogin">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="mostrarOpcionesLogin = true" routerDirection="root" color="success">
+          Registrarse
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-button class="ion-float-right" expand="block" fill="clear" (click)="mostrarModalRegistro()" routerDirection="root" color="primary">
+          Por qué registrarse? <ion-icon name="arrow-forward"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="ion-float-right">
+        <ion-button expand="block" routerLink="/verAuto" routerDirection="root">
+          Usar sin registro
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
+  <div padding *ngIf="mostrarOpcionesLogin">
+  <form novalidate [formGroup]="formLogin">
+    <ion-grid>
+      <ion-row *ngIf="!mostrarEmailPass">
+        <ion-col text-right>
+          <ion-button expand="block" (click)="loginEmailPass()" color="secondary">Ingresar con email y contraseña</ion-button>
+        </ion-col>
+      </ion-row>
+      <div id="seccionUserPass" *ngIf="mostrarEmailPass">
+        <ion-row class="ion-justify-content-around">
+          <ion-col>
+            <ion-item class="borde">
+              <ion-input expand="block" type="email" placeholder="Ingresa tu email" value="{{emailUser}}"
+                [(ngModel)]="emailUser" name="emailUser" formControlName="emailUser" required></ion-input>
+            </ion-item>
+            <ion-item no-lines
+              *ngIf="( formLogin.get('emailUser').hasError('minlength') || formLogin.get('emailUser').hasError('pattern') ||formLogin.get('emailUser').hasError('required') ) && formLogin.get('emailUser').touched">
+              <div class="error"
+                *ngIf="formLogin.get('emailUser').hasError('required') && formLogin.get('emailUser').touched">
+                Por favor ingrese su email
+              </div>
+              <div class="error"
+                *ngIf="formLogin.get('emailUser').hasError('pattern') && formLogin.get('emailUser').touched">
+                Email invalido
+              </div>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item class="borde">
+              <ion-input expand="block" type="password" placeholder="Ingresa tu contraseña" value="{{passUser}}"
+                [(ngModel)]="passUser" name="passUser" formControlName="passUser" required></ion-input>
+            </ion-item>
+            <ion-item no-lines
+              *ngIf="(formLogin.get('passUser').hasError('required') ) && formLogin.get('passUser').touched">
+              <div class="error"
+                *ngIf="formLogin.get('passUser').hasError('required') && formLogin.get('passUser').touched">
+                Campo obligatorio
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col text-right>
+            <ion-button expand="block" (click)="loginUser()" [disabled]="formLogin.invalid">Ingresar</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col text-right>
+              <ion-button expand="block" (click)="mostrarMenu()" color="secondary">Volver</ion-button>
+            </ion-col>
+        </ion-row>
+      </div>
+
+      <ion-row>
+        <ion-col *ngIf="!mostrarEmailPass" expand="block" class="ion-text-center">
+            <div class="btn_container">
+                <ion-button expand="block" (click)="loginFeibu()">Login with Facebook</ion-button>
+            </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button expand="block" (click)="mostrarOpcionesLogin = false" color="tertiary">Volver</ion-button>
+        </ion-col>
+    </ion-row>
+    </ion-grid>
+  </form>
+</div>
+
+
+
 </ion-content>

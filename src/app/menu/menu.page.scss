@@ -1,0 +1,19 @@
+.error {
+    color: rgb(223, 62, 62);
+    font-size: 11px;
+  }
+
+  .borde{
+    border-radius: 6px 6px 6px 6px;
+    -moz-border-radius: 6px 6px 6px 6px;
+    -webkit-border-radius: 6px 6px 6px 6px;
+    border: 1px solid #7beb1a;
+  }
+
+  .btn_container {
+    padding-top: 14px;
+
+    button {
+        background: #3b5998;
+    }
+}
