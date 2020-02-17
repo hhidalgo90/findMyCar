@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { MenuPage } from './menu/menu.page';
 import { VerAutoPage } from './ver-auto/ver-auto.page';
+import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -19,6 +20,9 @@ const routes: Routes = [
   {
     path: 'modal-registrese',
     loadChildren: () => import('./modal-registrese/modal-registrese.module').then( m => m.ModalRegistresePageModule)
+  },
+  {
+    path: 'usuarioLogueado', component : MenuUsuarioLogueadoPage
   }
 ];
 

@@ -125,6 +125,7 @@ export class VerAutoPage implements OnInit {
   imagen: string;
   mostrarEstacionar: boolean;
   autoEstacionado : boolean;
+  esUsuarioLogueado : String;
 
   constructor(
     private geolocation: Geolocation,
@@ -140,6 +141,8 @@ export class VerAutoPage implements OnInit {
 
   ngOnInit() {
     this.loadMap();
+    this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
+
   }
 
   loadMap() {
