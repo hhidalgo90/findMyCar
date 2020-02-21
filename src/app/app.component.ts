@@ -12,17 +12,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   public navigate  =
-  [
-    {
-      title : "Home",
-      url   : "/menuApp",
-      icon  : "home"
-    },
-    {
-      title : "Chat",
-      url   : "/menu",
-      icon  : "chatboxes"
-    },
+  [    
     {
       title : "Contacts",
       url   : "/contacts",

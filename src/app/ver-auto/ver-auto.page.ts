@@ -6,6 +6,7 @@ import {
 } from "@ionic-native/native-geocoder/ngx";
 import { ModalController } from "@ionic/angular";
 import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page";
+import { Router } from '@angular/router';
 
 declare var google;
 const estiloMapa: any = [
@@ -130,7 +131,8 @@ export class VerAutoPage implements OnInit {
   constructor(
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private router : Router
   ) {
     this.mostrarBtnLlegar = false;
     this.mostrarMarcador = true;
@@ -313,5 +315,19 @@ export class VerAutoPage implements OnInit {
   centrarMapa(){
     this.map.panTo(this.mIubicacion);
     this.map.setZoom(15);
+  }
+
+  volverHome(){
+    this.router.navigateByUrl("/usuarioLogueado");
+  }
+
+  esLogueado(){    
+    var usuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
+    if(usuarioLogueado == "true"){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }

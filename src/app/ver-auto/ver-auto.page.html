@@ -1,18 +1,14 @@
-<ion-header>
-<ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-menu-button></ion-menu-button>
-  </ion-buttons>
-  <ion-row>
-    <ion-col text-start>
-      <ion-title>Estacione su auto</ion-title>
-    </ion-col>
-  </ion-row>
-</ion-toolbar>
-</ion-header>
-<ion-content padding>
+<ion-content>
  
   <div class="map-wrapper">
+    <div class="btnVolver" id="btnVolver">
+      <ion-buttons slot="start" *ngIf="!esLogueado()" class="ion-float-left">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="start" *ngIf="esLogueado()" class="ion-float-left" (click)="volverHome()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-buttons>
+    </div>
     <div id="map_center" *ngIf="mostrarMarcador">
       <img src="../../assets/icon/pin.png" />
     </div>

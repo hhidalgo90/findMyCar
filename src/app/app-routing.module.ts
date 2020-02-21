@@ -22,7 +22,10 @@ const routes: Routes = [
     loadChildren: () => import('./modal-registrese/modal-registrese.module').then( m => m.ModalRegistresePageModule)
   },
   {
-    path: 'usuarioLogueado', component : MenuUsuarioLogueadoPage
+    path: 'usuarioLogueado', component : MenuUsuarioLogueadoPage 
+  },  
+  {
+    path: 'usuarioLogueado/verAuto', component : VerAutoPage 
   }
 ];
 

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Routes } from '@angular/router';
-import { VerAutoPage } from '../ver-auto/ver-auto.page';
 
 @Component({
   selector: 'app-menu-usuario-logueado',
