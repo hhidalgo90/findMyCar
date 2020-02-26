@@ -7,109 +7,16 @@ import {
 import { ModalController } from "@ionic/angular";
 import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page";
 import { Router } from '@angular/router';
+import { EstilosMapaService } from '../services/estilos-mapa.service';
 
 declare var google;
-const estiloMapa: any = [
-  {
-    featureType: "landscape",
-    stylers: [
-      {
-        saturation: -100
-      },
-      {
-        lightness: 60
-      }
-    ]
-  },
-  {
-    featureType: "road.local",
-    stylers: [
-      {
-        saturation: -100
-      },
-      {
-        lightness: 40
-      },
-      {
-        visibility: "on"
-      }
-    ]
-  },
-  {
-    featureType: "transit",
-    stylers: [
-      {
-        saturation: -100
-      },
-      {
-        visibility: "simplified"
-      }
-    ]
-  },
-  {
-    featureType: "administrative.province",
-    stylers: [
-      {
-        visibility: "off"
-      }
-    ]
-  },
-  {
-    featureType: "water",
-    stylers: [
-      {
-        visibility: "on"
-      },
-      {
-        lightness: 30
-      }
-    ]
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#ef8c25"
-      },
-      {
-        lightness: 40
-      }
-    ]
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.stroke",
-    stylers: [
-      {
-        visibility: "off"
-      }
-    ]
-  },
-  {
-    featureType: "poi.park",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#b6c54c"
-      },
-      {
-        lightness: 40
-      },
-      {
-        saturation: -40
-      }
-    ]
-  },
-  {}
-];
 
 @Component({
   selector: "app-ver-auto",
   templateUrl: "./ver-auto.page.html",
   styleUrls: ["./ver-auto.page.scss"]
 })
-export class VerAutoPage implements OnInit {
+export class VerAutoPage extends EstilosMapaService {
   @ViewChild("map", { static: false }) mapElement: ElementRef;
   map: any;
   ubicacionAuto: any;
@@ -134,6 +41,7 @@ export class VerAutoPage implements OnInit {
     public modalController: ModalController,
     private router : Router
   ) {
+    super();
     this.mostrarBtnLlegar = false;
     this.mostrarMarcador = true;
     this.existeMarcador = false;
@@ -159,7 +67,9 @@ export class VerAutoPage implements OnInit {
           center: latLng,
           zoom: 15,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          styles: estiloMapa
+          styles: this.estiloMapa,
+          mapTypeControl: false,
+          fullscreenControl: false
         };
         this.mIubicacion = latLng;
 
