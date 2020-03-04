@@ -16,6 +16,43 @@
   <ion-grid>
     <ion-row>
       <ion-col>
+        <ion-item>
+          <ion-input placeholder="Email"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-input type="password" placeholder="Password"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="mostrarOpcionesLogin = true" routerDirection="root" color="secondary">
+          Iniciar Sesion
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          Recordar contraseña
+        </ion-label>
+      </ion-col>
+
+      <ion-col>
+        <ion-label class="ion-float-right">
+          <ion-toggle checked></ion-toggle>
+        </ion-label>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
         <ion-button expand="block" (click)="mostrarOpcionesLogin = true" routerDirection="root" color="success">
           Registrarse
         </ion-button>
