@@ -17,3 +17,11 @@
         background: #3b5998;
     }
 }
+
+.errorInvalido{
+  border: solid 1px red;
+}
+
+ion-content.background-image{
+  --background: url(../../assets/logoMenu2.jpg) 0 0/100% 100% no-repeat;
+}

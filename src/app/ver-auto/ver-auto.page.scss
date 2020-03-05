@@ -1,8 +1,3 @@
-#map_canvas {
-  width: 100%;
-  height: 80%;
-  border: 1px solid red;
-} 
  
 #directionsPanel {
   width:30%;
@@ -11,11 +6,13 @@
  
 #map {
   width: 100%;
-  height: 70vh;
+  height: 100%;
+  position: relative;
 }
- 
+
 .map-wrapper {
   position: relative;
+  height: 100%;
  
   #map_center {
     position: absolute;
@@ -39,8 +36,18 @@
     margin-top: -41px;
     font-size: large;
   }
+
+  #contenedorOpciones{
+    height: 30%;
+    width: 100%;
+    position: absolute;
+    top: 70%;
+    background-color:#f4f5f8;
+    border-top: solid 1px black;
+  }
 }
 
 .cabecera{
   background: transparent;
 }
+

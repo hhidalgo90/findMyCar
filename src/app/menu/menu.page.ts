@@ -13,6 +13,7 @@ export class MenuPage implements OnInit {
   emailUser = "";
   passUser = "";
   formLogin : FormGroup;
+  formInicioSesion: FormGroup;
   mostrarEmailPass : boolean;
   mostrarOpcionesLogin : boolean;
   public loading: HTMLIonLoadingElement;
@@ -23,11 +24,14 @@ export class MenuPage implements OnInit {
       passUser: new FormControl('', [Validators.required]),
       emailUser: new FormControl('', [Validators.required, Validators.pattern(EMAILPATTERN)])
     });
+
+    this.formInicioSesion = new FormGroup({
+      emailSession: new FormControl('', [Validators.required, Validators.email]),
+      passSession: new FormControl('', [Validators.required])
+    });
   }
 
-  ngOnInit() {
-    console.log("menuuuuuu");
-    
+  ngOnInit() {    
     this.mostrarEmailPass = false;
     this.mostrarOpcionesLogin = false;
   }

@@ -13,41 +13,44 @@
       <img src="../../assets/icon/pin.png" />
     </div>
     <div #map id="map"></div>
+    <div class="contenedorOpciones" id="contenedorOpciones">
+      <ion-grid style="height: 30%;">
+      <ion-row style="height: 40%;">
+        <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary" *ngIf="autoEstacionado">
+          <ion-segment-button value="WALKING">
+            <ion-icon name="walk"></ion-icon>
+          </ion-segment-button>
+          <ion-segment-button value="DRIVING">
+            <ion-icon name="car"></ion-icon>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-row>
+      <ion-row>
+        <ion-col style="height: 10%;" text-end>
+          <ion-button (click)="calcRoute()" shape="round" fill="outline" *ngIf="mostrarBtnCalcular">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            Calcular Ruta
+          </ion-button>
+          <ion-button (click)="centrarMapa()" shape="round" fill="outline">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            Centrar
+          </ion-button>
+          <ion-button (click)="estacionarAuto()" shape="round" fill="outline" *ngIf="mostrarEstacionar">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            Estacioné aquí
+          </ion-button>
+          <ion-button (click)="presentModal()" color="success" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            Como llegar
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      </ion-grid> 
+    </div>
   </div>
   <ion-input type="hidden" [(ngModel)]="ubicacionAuto" inputmode="text"></ion-input>
   <ion-input type="hidden" [(ngModel)]="mIubicacion" inputmode="text"></ion-input>
   
-  <ion-grid style="height: 30%;">
-  <ion-row style="height: 20%;">
-    <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary" *ngIf="autoEstacionado">
-      <ion-segment-button value="WALKING">
-        <ion-icon name="walk"></ion-icon>
-      </ion-segment-button>
-      <ion-segment-button value="DRIVING">
-        <ion-icon name="car"></ion-icon>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-row>
-  <ion-row>
-    <ion-col style="height: 10%;" text-end>
-      <ion-button (click)="calcRoute()" shape="round" fill="outline" *ngIf="mostrarBtnCalcular">
-        <ion-icon slot="start" name="locate"></ion-icon>
-        Calcular Ruta
-      </ion-button>
-      <ion-button (click)="centrarMapa()" shape="round" fill="outline">
-        <ion-icon slot="start" name="locate"></ion-icon>
-        Centrar
-      </ion-button>
-      <ion-button (click)="estacionarAuto()" shape="round" fill="outline" *ngIf="mostrarEstacionar">
-        <ion-icon slot="start" name="locate"></ion-icon>
-        Estacioné aquí
-      </ion-button>
-      <ion-button (click)="presentModal()" color="success" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
-        <ion-icon slot="start" name="locate"></ion-icon>
-        Como llegar
-      </ion-button>
-    </ion-col>
-  </ion-row>
-  </ion-grid> 
+  
 </ion-content>
 
