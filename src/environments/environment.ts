@@ -3,7 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebaseConfig : {
+    apiKey: "AIzaSyAgRqDgGyhi2dJZnmWvf381bX5P0O-fU3o",
+    authDomain: "gpscar-d23cb.firebaseapp.com",
+    databaseURL: "https://gpscar-d23cb.firebaseio.com",
+    projectId: "gpscar-d23cb",
+    storageBucket: "gpscar-d23cb.appspot.com",
+    messagingSenderId: "690787181980",
+    appId: "1:690787181980:web:b7355e0e165fbc9ed95459",
+    measurementId: "G-PZEYJ51M9L"
+  }
 };
 
 /*

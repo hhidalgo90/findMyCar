@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "690787181980",
+    "firebase_url": "https://gpscar-d23cb.firebaseio.com",
+    "project_id": "gpscar-d23cb",
+    "storage_bucket": "gpscar-d23cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690787181980:android:adeec8ac40050745d95459",
+        "android_client_info": {
+          "package_name": "io.ionic.gpsCar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690787181980-515nmeah835vb447sj37osplmqubkjq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC32JMmpXJhCtybTZ27s1FvfM7uXQRLBsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690787181980-515nmeah835vb447sj37osplmqubkjq1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

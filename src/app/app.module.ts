@@ -16,11 +16,14 @@ import { ModalComoLlegarPage } from './modal-como-llegar/modal-como-llegar.page'
 import { ModalRegistresePage } from './modal-registrese/modal-registrese.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
+import { environment } from '../environments/environment';
+import { AngularFireModule } from '@angular/fire';
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule ],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig) ],
   providers: [
     StatusBar,
     SplashScreen,
