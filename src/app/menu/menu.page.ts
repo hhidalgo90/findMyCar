@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController  } from "@ionic/angular";
+import { ModalController, LoadingController, AlertController  } from "@ionic/angular";
 import { ModalRegistresePage } from '../modal-registrese/modal-registrese.page';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-menu',
@@ -12,13 +13,15 @@ import { Router } from '@angular/router';
 export class MenuPage implements OnInit {
   emailUser = "";
   passUser = "";
+  emailSession = "";
+  passSession = "";
   formLogin : FormGroup;
   formInicioSesion: FormGroup;
   mostrarEmailPass : boolean;
   mostrarOpcionesLogin : boolean;
   public loading: HTMLIonLoadingElement;
 
-  constructor(public modalController: ModalController, public loadingCtrl: LoadingController, private router: Router) { 
+  constructor(public modalController: ModalController, public loadingCtrl: LoadingController, private router: Router, private firebaseService : FirebaseService, public alertCtrl: AlertController) { 
     let EMAILPATTERN = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
     this.formLogin = new FormGroup({      
       passUser: new FormControl('', [Validators.required]),
@@ -67,17 +70,17 @@ export class MenuPage implements OnInit {
     });
     await this.loading.present();
 
- /*   this.loginService.loginUser(this.emailUser, this.passUser).then(
+    this.firebaseService.loginUser(this.emailSession, this.passSession).then(
       respuesta => {
-        console.log(respuesta);*/
+        console.log(respuesta);
         
         this.loading.dismiss().then(() => {
           window.sessionStorage.setItem("usuarioLogueado", "true"); //variable de session para guardar si el usuario esta logueado
           console.log("iniciar sesion: esLogueado: " + window.sessionStorage.getItem("usuarioLogueado"));
           this.router.navigateByUrl('usuarioLogueado');
         });
-      //},
-     /*error => {
+      },
+     error => {
         this.loading.dismiss().then(async () => {
           const alert = await this.alertCtrl.create({
             message: error.message,
@@ -86,7 +89,37 @@ export class MenuPage implements OnInit {
           await alert.present();
         });
       }
-    );  */  
+    );  
+}
+
+async registrarUsuario(): Promise<void> {
+  console.log("registrarUsuario");
+  this.loading = await this.loadingCtrl.create({      
+    duration: 1000,
+    message: "Registrando usuario.."
+  });
+  await this.loading.present();
+  
+  this.firebaseService.registrarUsuario(this.emailUser, this.passUser).then(resp =>{
+    console.log(resp);
+    this.loading.dismiss().then(() => {
+      window.sessionStorage.setItem("usuarioLogueado", "true"); //variable de session para guardar si el usuario esta logueado
+      console.log("Registrar usuario: esLogueado: " + window.sessionStorage.getItem("usuarioLogueado"));
+      this.router.navigateByUrl('usuarioLogueado');
+    });
+    
+  },
+  error => {
+    this.loading.dismiss().then(async () => {
+      const alert = await this.alertCtrl.create({
+        message: error.message,
+        buttons: [{ text: 'Ok', role: 'cancel' }],
+      });
+      await alert.present();
+    });
+  }); 
+
+  console.log("despues de registrarUsuario");
 }
 
 }

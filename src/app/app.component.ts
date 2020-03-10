@@ -4,6 +4,9 @@ import { Platform, LoadingController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
+import * as firebase from 'firebase/app';
+import { environment } from '../environments/environment';
+import { FirebaseService } from './services/firebase.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +28,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private router : Router,
-    private loadingCtrl : LoadingController
+    private loadingCtrl : LoadingController,
+    private firebaseService : FirebaseService
   ) {
     this.initializeApp();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
@@ -35,6 +39,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      firebase.initializeApp(environment.firebaseConfig);
     });
   }
 
@@ -44,12 +49,12 @@ export class AppComponent {
       message: "Cerrando Sesion"
     });
     await loading.present();
-    //this.loginService.logoutUser().then(()=>{
+    this.firebaseService.logoutUser().then(()=>{
       loading.dismiss();
       console.log("llegue a cerrar sesion");
       window.sessionStorage.setItem("usuarioLogueado" , "false");
       this.router.navigateByUrl("/menuApp");
-    //});
+    });
 
     return await loading.present();
   }

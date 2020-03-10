@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
+import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx'
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage],
@@ -29,6 +30,7 @@ import { AngularFireModule } from '@angular/fire';
     SplashScreen,
     Geolocation,
     NativeGeocoder,
+    FirebaseAuthentication,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

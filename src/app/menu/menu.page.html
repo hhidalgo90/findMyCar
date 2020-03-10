@@ -22,7 +22,8 @@
           placeholder="Email" 
           name="emailSession" 
           id="emailSession" 
-          formControlName ="emailSession"></ion-input>
+          formControlName ="emailSession"
+          [(ngModel)]="emailSession"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -34,7 +35,8 @@
           placeholder="Password" 
           name="passSession" 
           id="passSession" 
-          formControlName ="passSession"></ion-input>
+          formControlName ="passSession"
+          [(ngModel)]="passSession"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -131,7 +133,7 @@
 
         <ion-row>
           <ion-col text-right>
-            <ion-button expand="block" (click)="loginUser()" [disabled]="formLogin.invalid">Ingresar</ion-button>
+            <ion-button expand="block" (click)="registrarUsuario()" [disabled]="formLogin.invalid">Registrarse</ion-button>
           </ion-col>
         </ion-row>
         <ion-row>
