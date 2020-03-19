@@ -3,6 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { MenuPage } from './menu/menu.page';
 import { VerAutoPage } from './ver-auto/ver-auto.page';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
+import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,6 +27,9 @@ const routes: Routes = [
   },  
   {
     path: 'usuarioLogueado/verAuto', component : VerAutoPage 
+  },
+  {
+    path: 'usuarioLogueado/historialEstacionamientos', component : HistorialEstacionamientosPage
   }
 ];
 

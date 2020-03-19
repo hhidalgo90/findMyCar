@@ -8,6 +8,7 @@ import { ModalController } from "@ionic/angular";
 import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page";
 import { Router } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
+import { FirebaseService } from '../services/firebase.service';
 
 declare var google;
 
@@ -39,7 +40,8 @@ export class VerAutoPage extends EstilosMapaService {
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     public modalController: ModalController,
-    private router : Router
+    private router : Router,
+    private firebaseService: FirebaseService
   ) {
     super();
     this.mostrarBtnLlegar = false;
@@ -113,7 +115,7 @@ export class VerAutoPage extends EstilosMapaService {
           this.ubicacionAuto = new google.maps.LatLng(
             event.latLng.lat(),
             event.latLng.lng()
-          );
+          );        
           this.mostrarEstacionar = true;
           }
 
@@ -215,6 +217,14 @@ export class VerAutoPage extends EstilosMapaService {
       results => {
         console.log(results);
         this.agregarMarcador(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+
+        this.firebaseService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng()).then(resp=>{
+          console.log("ubicacion vehiculo guardado con exito en firebase");
+          
+        }).catch(error=>{
+          console.log("ocurrio un error al guardar ubicacion del vehiculo en firebase: " + error);
+          
+        });  
         
       }
     );

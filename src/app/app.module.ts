@@ -16,12 +16,14 @@ import { ModalComoLlegarPage } from './modal-como-llegar/modal-como-llegar.page'
 import { ModalRegistresePage } from './modal-registrese/modal-registrese.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
+import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx'
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig) ],
@@ -31,6 +33,7 @@ import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ng
     Geolocation,
     NativeGeocoder,
     FirebaseAuthentication,
+    AngularFirestore,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

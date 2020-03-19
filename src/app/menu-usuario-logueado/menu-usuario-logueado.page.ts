@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu-usuario-logueado',
@@ -6,10 +7,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu-usuario-logueado.page.scss'],
 })
 export class MenuUsuarioLogueadoPage implements OnInit {
- 
-  constructor() { }
+  
+  esUsuarioNuevo : boolean;
+
+  constructor(private route: ActivatedRoute, private router: Router) {
+    console.log("constructor menu user logeado");
+    
+    this.route.queryParams.subscribe(params => {
+      if (params && params.esUsuarioNuevo) {
+        this.esUsuarioNuevo = params.esUsuarioNuevo;
+        console.log("es usuario nuevo: " + this.esUsuarioNuevo);
+        
+      }
+    });
+   }
 
   ngOnInit() {
   }
 
+  irHome(){
+    this.router.navigateByUrl("/usuarioLogueado");
+  }
+
+  irHistorial(){
+    this.router.navigateByUrl("/usuarioLogueado/historialEstacionamientos");
+  }
+
+  irMapa(){
+    this.router.navigateByUrl("/verAuto");
+  }
 }

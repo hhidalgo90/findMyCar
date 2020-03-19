@@ -42,6 +42,20 @@
     </ion-row>
     <ion-row>
       <ion-col>
+        <ion-label>
+          Recordar contraseña
+        </ion-label>
+      </ion-col>
+
+      <ion-col>
+        <ion-label class="ion-float-right">
+          <ion-toggle checked></ion-toggle>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
         <ion-button expand="block" 
         [disabled]="formInicioSesion.status == 'INVALID'" 
         (click)="loginUser()" 
@@ -54,15 +68,9 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-label>
-          Recordar contraseña
-        </ion-label>
-      </ion-col>
-
-      <ion-col>
-        <ion-label class="ion-float-right">
-          <ion-toggle checked></ion-toggle>
-        </ion-label>
+        <ion-button class="ion-float-right" expand="block" fill="clear" (click)="resetPassword()" routerDirection="root" color="primary">
+          Olvidaste tu contraseña? <ion-icon name="arrow-forward"></ion-icon>
+        </ion-button>
       </ion-col>
     </ion-row>
   </form>
@@ -71,15 +79,6 @@
       <ion-col>
         <ion-button expand="block" (click)="mostrarOpcionesLogin = true" routerDirection="root" color="success">
           Registrarse
-        </ion-button>
-      </ion-col>
-
-    </ion-row>
-
-    <ion-row>
-      <ion-col>
-        <ion-button class="ion-float-right" expand="block" fill="clear" (click)="mostrarModalRegistro()" routerDirection="root" color="primary">
-          Por qué registrarse? <ion-icon name="arrow-forward"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
@@ -153,7 +152,7 @@
 
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button expand="block" (click)="mostrarOpcionesLogin = false" color="tertiary">Volver</ion-button>
+          <ion-button expand="block" (click)="mostrarOpcionesLogin = false" color="tertiary">Volver al Home</ion-button>
         </ion-col>
     </ion-row>
     </ion-grid>
