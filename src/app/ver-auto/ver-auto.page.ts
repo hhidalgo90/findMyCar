@@ -108,7 +108,8 @@ export class VerAutoPage extends EstilosMapaService {
 
         this.map.addListener("mouseup", event => {
           console.log("evento mouseup");
-        
+          console.log(event);
+          
           if(!this.autoEstacionado){
           console.log(event.latLng.lat());
           console.log(event.latLng.lng());
@@ -216,9 +217,11 @@ export class VerAutoPage extends EstilosMapaService {
       },
       results => {
         console.log(results);
+        console.log(results[0].formatted_address);
+        
         this.agregarMarcador(results[0].geometry.location.lat(), results[0].geometry.location.lng());
 
-        this.firebaseService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng()).then(resp=>{
+        this.firebaseService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng(), results[0].formatted_address).then(resp=>{
           console.log("ubicacion vehiculo guardado con exito en firebase");
           
         }).catch(error=>{
