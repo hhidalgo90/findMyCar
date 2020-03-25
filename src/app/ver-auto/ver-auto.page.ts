@@ -6,7 +6,7 @@ import {
 } from "@ionic-native/native-geocoder/ngx";
 import { ModalController } from "@ionic/angular";
 import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page";
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
 
@@ -35,13 +35,16 @@ export class VerAutoPage extends EstilosMapaService {
   mostrarEstacionar: boolean;
   autoEstacionado : boolean;
   esUsuarioLogueado : String;
+  latitud : Number;
+  longitud: Number;
 
   constructor(
     private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     public modalController: ModalController,
     private router : Router,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private route: ActivatedRoute
   ) {
     super();
     this.mostrarBtnLlegar = false;
@@ -49,6 +52,24 @@ export class VerAutoPage extends EstilosMapaService {
     this.existeMarcador = false;
     this.mostrarEstacionar = false;
     this.autoEstacionado = false;
+
+    this.route.queryParams.subscribe(params => {
+      console.log("params");      
+      console.log(params.latitud);
+      console.log(params.longitud);
+      this.latitud = +params.latitud;
+      this.longitud = +params.longitud;
+      
+      if (params && params.latitud  && params.longitud) {
+        let latLng = new google.maps.LatLng(
+          +params.latitud,
+          +params.longitud
+        );
+        this.imagen = "../../assets/icon/car.png";
+        this.agregarMarcador(latLng.lat(), latLng.lng());
+                
+      }
+    });
   }
 
   ngOnInit() {
@@ -131,6 +152,7 @@ export class VerAutoPage extends EstilosMapaService {
     console.log("agregar marcador");
     console.log(lat, long);
     this.ubicacionAuto = new google.maps.LatLng(lat, long);
+    let centrarMap = new google.maps.LatLng(lat, long);
 
     this.marker = new google.maps.Marker({
       map: this.map,
@@ -160,8 +182,7 @@ export class VerAutoPage extends EstilosMapaService {
       infowindow.open(this.map, this.marker);
     });
 
-    this.existeMarcador = true;
-
+    this.existeMarcador = true;    
     this.marker.setMap(this.map);
   }
 

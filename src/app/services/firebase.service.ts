@@ -65,9 +65,14 @@ export class FirebaseService {
   }
 
   obtenerHistorialEstacionamiento():  AngularFirestoreCollection<any[]>{
+    if(firebase.auth().currentUser && firebase.auth().currentUser.uid != null){
     this.coleccionEstacionamientos = this.firestore.doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`).collection("historialEstacionamientos")
     this.coleccionEstacionamientos.valueChanges;
         console.log(this.coleccionEstacionamientos.valueChanges);
         return this.coleccionEstacionamientos;
-  }
+  } else{
+  console.log("user null");
+  
+}
+}
 }
