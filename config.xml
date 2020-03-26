@@ -104,6 +104,6 @@
     <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
         <string>We use your location for full functionality of certain app features.</string>
     </edit-config>
-    <engine name="android" spec="7.1.4" />
     <plugin name="cordova-plugin-firebase-authentication" spec="3.0.2" />
+    <engine name="android" spec="7.1.4" />
 </widget>

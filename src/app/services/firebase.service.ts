@@ -4,7 +4,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import {formatDate} from '@angular/common';
+import { formatDate } from '@angular/common';
 
 
 @Injectable({

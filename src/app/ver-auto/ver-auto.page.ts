@@ -9,6 +9,7 @@ import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page
 import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
+import { Observable } from 'rxjs';
 
 declare var google;
 
@@ -46,31 +47,30 @@ export class VerAutoPage extends EstilosMapaService {
     private firebaseService: FirebaseService,
     private route: ActivatedRoute
   ) {
-    super();
-    this.mostrarBtnLlegar = false;
-    this.mostrarMarcador = true;
-    this.existeMarcador = false;
-    this.mostrarEstacionar = false;
-    this.autoEstacionado = false;
+      super();
+      this.mostrarBtnLlegar = false;
+      this.mostrarMarcador = true;
+      this.existeMarcador = false;
+      this.mostrarEstacionar = false;
+      this.autoEstacionado = false;
 
-    this.route.queryParams.subscribe(params => {
-      console.log("params");      
-      console.log(params.latitud);
-      console.log(params.longitud);
-      this.latitud = +params.latitud;
-      this.longitud = +params.longitud;
-      
-      if (params && params.latitud  && params.longitud) {
-        let latLng = new google.maps.LatLng(
-          +params.latitud,
-          +params.longitud
-        );
-        this.imagen = "../../assets/icon/car.png";
-        this.agregarMarcador(latLng.lat(), latLng.lng());
-                
-      }
-    });
-  }
+      this.route.queryParams.subscribe(params => {
+        console.log("params");
+        console.log(params.latitud);
+        console.log(params.longitud);
+        this.latitud = +params.latitud;
+        this.longitud = +params.longitud;
+
+        if (params && params.latitud && params.longitud) {
+          let latLng = new google.maps.LatLng(
+            +params.latitud,
+            +params.longitud
+          );
+          this.imagen = "../../assets/icon/car.png";
+          this.agregarMarcador(latLng.lat(), latLng.lng());
+        }
+      });
+    }
 
   ngOnInit() {
     this.loadMap();
@@ -249,11 +249,32 @@ export class VerAutoPage extends EstilosMapaService {
           console.log("ocurrio un error al guardar ubicacion del vehiculo en firebase: " + error);
           
         });  
+
+
+          // Call subscribe() to start listening for updates.
+          const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0]).subscribe({
+            next(distanciaEntrePuntos) {
+              console.log("Distancia entre los puntos: ", distanciaEntrePuntos);
+              if(distanciaEntrePuntos>1){
+                console.log("te estan pelando el toco");
+                
+              }
+            },
+            error(msg) {
+              console.log("Error Getting Location: ", msg);
+            }
+          });
+    
+          // Stop listening for location after 10 seconds
+          /*setTimeout(() => {
+            locationsSubscription.unsubscribe();
+          }, 10000);*/
         
       }
     );
     this.mostrarMarcador = false;
     this.autoEstacionado = true;
+
   }
 
   centrarMapa(){
@@ -274,4 +295,58 @@ export class VerAutoPage extends EstilosMapaService {
       return false;
     }
   }
+
+
+
+  obtenerDistanciaEntrePuntos(results : any): Observable<any>{
+
+  // Create an Observable that will start listening to geolocation updates
+// when a consumer subscribes.
+const locations = new Observable((observer) => {
+  let watchId: number;
+
+  // Simple geolocation API check provides values to publish
+  if ('geolocation' in navigator) {
+    watchId = navigator.geolocation.watchPosition((position: Position) => {
+
+      let distanciaEntrePuntos = getDistanceFromLatLonInKm(position.coords.latitude,position.coords.longitude ,results.geometry.location.lat(),results.geometry.location.lng());
+
+      observer.next(distanciaEntrePuntos);
+    }, (error: PositionError) => {
+      observer.error(error);
+    });
+  } else {
+    observer.error('Geolocation not available');
+  }
+
+  // When the consumer unsubscribes, clean up data ready for next subscription.
+  return {
+    unsubscribe() {
+      navigator.geolocation.clearWatch(watchId);
+    }
+  };
+
+  function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+  }
+  
+  function deg2rad(deg) {
+    return deg * (Math.PI/180)
+  }
+});
+return locations;
+}
+
+
+
 }
