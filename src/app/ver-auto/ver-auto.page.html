@@ -15,7 +15,9 @@
     <div #map id="map"></div>
     <div class="contenedorOpciones" id="contenedorOpciones">
       <ion-grid style="height: 30%;">
-      <ion-row style="height: 40%;">
+        <div class="spacer"></div>
+      <ion-row>
+        <ion-col>
         <ion-segment [(ngModel)]="tipoMovilizacion" (ionChange)="cambiarRuta()" color="primary" *ngIf="autoEstacionado">
           <ion-segment-button value="WALKING">
             <ion-icon name="walk"></ion-icon>
@@ -24,22 +26,32 @@
             <ion-icon name="car"></ion-icon>
           </ion-segment-button>
         </ion-segment>
+      </ion-col>
       </ion-row>
+      <div class="spacer"></div>
       <ion-row>
-        <ion-col style="height: 10%;" text-end>
-          <ion-button (click)="calcRoute()" shape="round" fill="outline" *ngIf="mostrarBtnCalcular">
-            <ion-icon slot="start" name="locate"></ion-icon>
-            Calcular Ruta
-          </ion-button>
-          <ion-button (click)="centrarMapa()" shape="round" fill="outline">
+        <ion-col class="ion-float-left">
+          <ion-button (click)="centrarMapa()" shape="round" fill="solid" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Centrar
           </ion-button>
-          <ion-button (click)="estacionarAuto()" shape="round" fill="outline" *ngIf="mostrarEstacionar">
+        </ion-col>
+        <ion-col class="ion-float-right">
+          <ion-button (click)="limpiarMapa()" color="success" shape="round" fill="solid" expand="block" size="small">
+            <ion-icon slot="start" name="locate"></ion-icon>
+            Limpiar mapa
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-float-left">
+          <ion-button (click)="estacionarAuto()" shape="round" fill="solid" *ngIf="mostrarEstacionar" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Estacioné aquí
           </ion-button>
-          <ion-button (click)="presentModal()" color="success" shape="round" fill="outline" *ngIf="mostrarBtnLlegar">
+        </ion-col>
+        <ion-col class="ion-float-right">
+          <ion-button (click)="presentModal()" color="success" shape="round" fill="solid" *ngIf="mostrarBtnLlegar" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Como llegar
           </ion-button>
