@@ -71,8 +71,7 @@ export class FirebaseService {
         console.log(this.coleccionEstacionamientos.valueChanges);
         return this.coleccionEstacionamientos;
   } else{
-  console.log("user null");
-  
-}
+  console.log("user null");  
+  }
 }
 }

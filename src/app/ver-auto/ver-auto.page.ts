@@ -9,7 +9,7 @@ import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page
 import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
-import { Observable } from 'rxjs';
+import { Observable, ObjectUnsubscribedError } from 'rxjs';
 
 declare var google;
 
@@ -30,13 +30,14 @@ export class VerAutoPage extends EstilosMapaService {
   tipoMovilizacion: string;
   mostrarMarcador: boolean = true;
   existeMarcador: boolean;
-  marker: any;
+  marker = new google.maps.Marker();
   imagen: string;
   mostrarEstacionar: boolean;
   autoEstacionado : boolean;
   esUsuarioLogueado : String;
   latitud : Number;
   longitud: Number;
+  arrayMarkers = new Array<any>();
 
   constructor(
     private geolocation: Geolocation,
@@ -79,7 +80,7 @@ export class VerAutoPage extends EstilosMapaService {
 
   loadMap() {
 
-    this.geolocation.watchPosition().subscribe(resp => {
+    /*this.geolocation.watchPosition().subscribe(resp => {
       let latLng = new google.maps.LatLng(
         resp.coords.latitude,
         resp.coords.longitude
@@ -140,12 +141,10 @@ export class VerAutoPage extends EstilosMapaService {
         }
 
       });
-    });
+    });*/
 
 
-
-
-    /*this.geolocation
+    this.geolocation
       .getCurrentPosition()
       .then(resp => {
         let latLng = new google.maps.LatLng(
@@ -171,17 +170,22 @@ export class VerAutoPage extends EstilosMapaService {
           document.getElementById("directionsPanel")
         );
 
-        console.log("mi ubicacion " + latLng.lat() + "--" + latLng.lng());
+        this.geolocation.watchPosition().subscribe(resp => {
+          let latLng = new google.maps.LatLng(
+            resp.coords.latitude,
+            resp.coords.longitude
+          );
+                console.log("mi ubicacion " + latLng.lat() + "--" + latLng.lng());
         
         this.imagen = "../../assets/icon/persona.png";
         this.agregarMarcador(latLng.lat(), latLng.lng());
-
-        console.log("ubicacion auto" + this.ubicacionAuto.lat() + "--" + this.ubicacionAuto.lng());      
+      
         if(this.autoEstacionado){
+          console.log("ubicacion auto" + this.ubicacionAuto.lat() + "--" + this.ubicacionAuto.lng());  
           this.imagen = "../../assets/icon/car.png";
           this.agregarMarcador(this.ubicacionAuto.lat(), this.ubicacionAuto.lng());
         }
-
+  
         this.map.addListener("click", event => {
           console.log(event.latLng.lat());
           console.log(event.latLng.lng());
@@ -192,7 +196,7 @@ export class VerAutoPage extends EstilosMapaService {
           //AGREGAR CONDICION PARA QUE SE OCULTE CUANDO NO ES CLIC EN MARCADOR
           //this.map.infowindow().close();
         });
-
+  
         this.map.addListener("mouseup", event => {
           console.log("evento mouseup");
           console.log(event);
@@ -206,18 +210,18 @@ export class VerAutoPage extends EstilosMapaService {
           );        
           this.mostrarEstacionar = true;
           }
-
+          });
         });
+        
       })
       .catch(error => {
         console.log("Error getting location", error);
-      });*/
+      });
   }
 
   agregarMarcador(lat, long) {
     console.log("agregar marcador");
     console.log(lat, long);    
-    let centrarMap = new google.maps.LatLng(lat, long);
 
     this.marker = new google.maps.Marker({
       map: this.map,
@@ -226,10 +230,10 @@ export class VerAutoPage extends EstilosMapaService {
       icon: this.imagen,
       animation: google.maps.Animation.DROP,
       draggable: false
-    });
+    });    
     console.log("crear marker");
 
-    var contentString =
+    let contentString =
       '<div id="content">' +
       '<div id="siteNotice">' +
       "</div>" +
@@ -240,15 +244,25 @@ export class VerAutoPage extends EstilosMapaService {
       "</div>" +
       "</div>";
 
-    var infowindow = new google.maps.InfoWindow({
+    let infowindow = new google.maps.InfoWindow({
       content: contentString
     });
-    this.marker.addListener("click", function() {
+
+    google.maps.event.addListener(this.marker, 'click', () => {
+      console.log("clic marcador");
+      
+      if (infowindow)
+      infowindow.close();
+
       infowindow.open(this.map, this.marker);
     });
+    
+    this.arrayMarkers.push(this.marker);
 
     this.existeMarcador = true;    
-    this.marker.setMap(this.map);
+    for (var i = 0; i < this.arrayMarkers.length; i++) {
+      this.arrayMarkers[i].setMap(this.map);
+    }
   }
 
   cambiarRuta() {
@@ -323,8 +337,22 @@ export class VerAutoPage extends EstilosMapaService {
         });
 
         // Call subscribe() to start listening for updates.
-        this.obtenerDistanciaEntrePuntos(results[0]);
-   
+        const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0]).subscribe({
+          next(distanciaEntrePuntos) {
+            console.log("Distancia entre los puntos: ", distanciaEntrePuntos);
+            if(distanciaEntrePuntos > 0.1){
+              alert("te estan pelando el toco");
+              locationsSubscription.unsubscribe();
+              if(this.esLogueado){
+                console.log("estoy logueado");
+                
+              }
+            }
+          },
+          error(msg) {
+            console.log("Error Getting Location: ", msg);
+          }
+        });
       }
     );
     this.mostrarMarcador = false;
@@ -338,11 +366,22 @@ export class VerAutoPage extends EstilosMapaService {
   }
 
   limpiarMapa(){
+    console.log("limpiar mapa");
+    console.log(this.arrayMarkers);    
+    for(var i = 0 ; i < this.arrayMarkers.length; i++){
+      console.log(this.arrayMarkers[i].icon.substring(this.arrayMarkers[i].icon.length - 7, this.arrayMarkers[i].icon.length));
+      if(this.arrayMarkers[i].icon.substring(this.arrayMarkers[i].icon.length - 7, this.arrayMarkers[i].icon.length) == "car.png"){
+        console.log("soy auto");
+        this.arrayMarkers[i].setMap(null);
+       
+      }
+    }
+    this.arrayMarkers = [];
+    
     this.mostrarEstacionar= false;
     this.mostrarBtnLlegar = false;
     this.autoEstacionado = false;
     this.mostrarMarcador = true;
-    this.marker.setMap(null);
     this.directionsRenderer.setMap(null);
     this.centrarMapa();
   }
@@ -366,33 +405,15 @@ export class VerAutoPage extends EstilosMapaService {
    * Funcion que retorna un observable con la distancia entre dos puntos.
    * @param results 
    */
-  obtenerDistanciaEntrePuntos(ubicacionVehiculo : any){
+  obtenerDistanciaEntrePuntos(ubicacionVehiculo : any): Observable<any> {
     console.log("obtenerDistanciaEntrePuntos : " + ubicacionVehiculo);
     
   // Create an Observable that will start listening to geolocation updates
 // when a consumer subscribes.
 const locations = new Observable((observer) => {
-  let watchId: number;
+  let swatchId: number;
 
-/*
-  this.geolocation
-  .getCurrentPosition()
-  .then(resp => {
-    let latLng = new google.maps.LatLng(
-      resp.coords.latitude,
-      resp.coords.longitude
-    );
-
-    let distanciaEntrePuntos = getDistanceFromLatLonInKm(resp.coords.latitude,resp.coords.longitude ,ubicacionVehiculo.geometry.location.lat(),ubicacionVehiculo.geometry.location.lng());
-      if(distanciaEntrePuntos>0){
-    observer.next(distanciaEntrePuntos);
-      }else{
-        observer.error("Ocurrio un error al obtener la distancia");
-      }
-  });*/
-
-
-  this.geolocation.watchPosition().subscribe(position => {
+  const watchId  = this.geolocation.watchPosition().subscribe(position => {
   console.log(position.coords.longitude + ' ' + position.coords.latitude);
   let distanciaEntrePuntos = getDistanceFromLatLonInKm(position.coords.latitude,position.coords.longitude ,ubicacionVehiculo.geometry.location.lat(),ubicacionVehiculo.geometry.location.lng());
   observer.next(distanciaEntrePuntos);
@@ -402,7 +423,7 @@ const locations = new Observable((observer) => {
   // When the consumer unsubscribes, clean up data ready for next subscription.
   return {
     unsubscribe() {
-      this.geolocation.clearWatch(watchId);
+      watchId.unsubscribe();
     }
   };
 
@@ -424,26 +445,8 @@ const locations = new Observable((observer) => {
     return deg * (Math.PI/180)
   }
 });
-
-const locationsSubscription = locations.subscribe({
-  next(distanciaEntrePuntos) {
-    console.log("Distancia entre los puntos: ", distanciaEntrePuntos);
-    if(distanciaEntrePuntos > 0.1){
-      alert("te estan pelando el toco");      
-      if(this.esLogueado){
-        console.log("estoy logueado");
-        
-      }
-    }
-  },
-  error(msg) {
-    console.log("Error Getting Location: ", msg);
-  }
-});
-
+ return locations;
 
 }
-
-
 
 }
