@@ -21,6 +21,8 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx'
 import { AngularFirestore } from 'angularfire2/firestore';
+import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
+import { Device } from '@ionic-native/device/ngx';
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage],
@@ -34,6 +36,8 @@ import { AngularFirestore } from 'angularfire2/firestore';
     NativeGeocoder,
     FirebaseAuthentication,
     AngularFirestore,
+    FirebaseMessaging,
+    Device,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

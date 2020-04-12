@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { environment } from '../environments/environment';
 import { FirebaseService } from './services/firebase.service';
+import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
+import { Device } from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +31,9 @@ export class AppComponent {
     private statusBar: StatusBar,
     private router : Router,
     private loadingCtrl : LoadingController,
-    private firebaseService : FirebaseService
+    private firebaseService : FirebaseService,
+    private firebaseMessaging: FirebaseMessaging,
+    private device: Device
   ) {
     this.initializeApp();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
@@ -39,8 +43,42 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      firebase.initializeApp(environment.firebaseConfig);
+      if(!firebase.apps.length){
+        firebase.initializeApp(environment.firebaseConfig);
+      }
+      this.firebaseMessaging.subscribe("all");
+      if(this.device.platform != null){
+      this.device.platform == "Android"
+        ? this.initializeFirebaseAndroid()
+        : this.initializeFirebaseIOS();
+      }
     });
+  }
+
+  initializeFirebaseAndroid() {
+    console.log("PUSHER Android subscribe");
+    this.firebaseMessaging.subscribe("android");
+    this.firebaseMessaging.getToken().then(token => {
+      console.log(token);
+      
+    });    
+    this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
+    this.firebaseMessaging.onMessage().subscribe(message => {
+      console.log("onMessage");      
+      console.log(message);      
+    });
+  }
+  initializeFirebaseIOS() {
+    console.log("PUSHER IOS subscribe");
+    this.firebaseMessaging.subscribe("ios");
+    this.firebaseMessaging.requestPermission()
+      .then(() => {
+        this.firebaseMessaging.getToken().then(token => {});
+        this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   async cerrarSesion(){
