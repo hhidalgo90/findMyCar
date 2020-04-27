@@ -61,7 +61,8 @@ export class HistorialEstacionamientosPage implements OnInit {
     let navigationExtras: NavigationExtras = {
       queryParams: {
         latitud : item.latitud,
-        longitud : item.longitud
+        longitud : item.longitud,
+        id : item.id
       }
     };
     this.router.navigate(["verAuto"],navigationExtras);

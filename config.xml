@@ -118,7 +118,7 @@
         <icon src="resources/windows/icon/StoreLogo.png" target="StoreLogo" />
         <splash src="resources/windows/splash/Splash.png" target="SplashScreen" />
     </platform>
-    <engine name="android" spec="7.1.4" />
     <plugin name="cordova-plugin-firebase-messaging" spec="4.3.1" />
     <plugin name="cordova-plugin-device" spec="^2.0.3" />
+    <engine name="android" spec="7.1.4" />
 </widget>

@@ -37,7 +37,7 @@
           </ion-button>
         </ion-col>
         <ion-col class="ion-float-right">
-          <ion-button (click)="limpiarMapa()" color="success" shape="round" fill="solid" expand="block" size="small">
+          <ion-button (click)="limpiarMapa(false)" color="success" shape="round" fill="solid" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Limpiar mapa
           </ion-button>
@@ -60,7 +60,7 @@
 
       <ion-row>
         <ion-col class="ion-float-left">
-          <ion-button (click)="limpiarMapa()" color="dark" shape="round" fill="solid" *ngIf="autoEstacionado" expand="block" size="small">
+          <ion-button (click)="limpiarMapa(true)" color="dark" shape="round" fill="solid" *ngIf="autoEstacionado" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Recoger auto
           </ion-button>

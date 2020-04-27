@@ -51,8 +51,11 @@
         </ion-col>
     
         <ion-col>
-          <div class="ion-text-center">
+          <div class="ion-text-center" *ngIf="item.autoEstacionado == true">
           <ion-button (click)="mostrarEnMapa(item)" id="botonPosicion"> <ion-icon name="pin"></ion-icon> </ion-button>
+        </div>
+        <div class="ion-text-center" *ngIf="item.autoEstacionado == false">
+          <ion-label><h3>Viaje finalizado</h3></ion-label>
         </div>
         </ion-col>
       </ion-row>
@@ -82,9 +85,9 @@
       <ion-badge>6</ion-badge>
     </ion-tab-button>
 
-    <ion-tab-button (click)="irHistorial()">
+    <ion-tab-button (click)="irHistorial()" style="background-color: aliceblue;">
       <ion-icon name="car"></ion-icon>
-      <ion-label>Historial*</ion-label>
+      <ion-label>Historial</ion-label>
     </ion-tab-button>
 
     <ion-tab-button (click)="irMapa()">

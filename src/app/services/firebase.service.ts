@@ -5,6 +5,7 @@ import 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { formatDate } from '@angular/common';
+import { $ } from 'protractor';
 
 
 @Injectable({
@@ -47,19 +48,24 @@ export class FirebaseService {
   guardarPuntoEstacionamiento(latitud : string , longitud : string, direccion : string): Promise<any>{
     console.log("[FirebaseService] [guardarPuntoEstacionamiento] " + latitud + " " + longitud);
     console.log(firebase.auth().currentUser);
-    let fechaEstacionamiento = formatDate(new Date(),'dd/MM/yyyy', 'en');
+    let fechaEstacionamiento = formatDate(new Date(),'MM/dd/yyyy', 'en');
+    let autoEstacionado = true;
     
     if(firebase && firebase.auth().currentUser.uid != null){
+      const id = this.firestore.createId();
+      console.log(id);
+      
       return firebase
         .firestore()
-        .doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`).collection("historialEstacionamientos").doc()
-        .set({ latitud , longitud, direccion, fechaEstacionamiento}).then(resp=>{
+        .doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`).collection("historialEstacionamientos").doc(`estacionamiento${id}`)
+        .set({ latitud , longitud, direccion, fechaEstacionamiento, autoEstacionado, id}).then(resp=>{
           console.log(resp);
           this.obtenerHistorialEstacionamiento();
+          window.sessionStorage.setItem("idEstacionamiento", id);
         })
         .catch(error=>{
           throw new Error(error);
-        });
+        })
     }
   
   }
@@ -73,5 +79,18 @@ export class FirebaseService {
   } else{
   console.log("user null");  
   }
+}
+
+estacionarVehiculo(idEstacionamiento : String) : Promise<any>{
+  let autoEstacionado = false;
+  return firebase
+        .firestore()
+        .doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`).collection("historialEstacionamientos").doc(`estacionamiento${idEstacionamiento}`)
+        .update({ autoEstacionado}).then(resp=>{
+          console.log(resp);
+        })
+        .catch(error=>{
+          throw new Error(error);
+        })
 }
 }

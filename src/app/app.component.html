@@ -7,6 +7,22 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <ion-grid *ngIf="esLogueado()">
+        <ion-row class="ion-align-items-center">          
+        <ion-col>
+          <div>            
+            <ion-avatar>
+              <img src="../../assets/avatar/hombre.jpg">
+            </ion-avatar>
+          </div>
+        </ion-col>
+        <ion-col class="ion-margin-end">
+          <ion-list-header>Bienvenid@ {{nombre}}</ion-list-header>
+        </ion-col>
+        <ion-col></ion-col>
+        </ion-row>
+      </ion-grid>
+      
       <ion-list>
         <ion-menu-toggle *ngIf="!esLogueado()" auto-hide="false">
           <ion-item routerLink="/menuApp" routerDirection="forward">
