@@ -77,77 +77,12 @@ export class VerAutoPage extends EstilosMapaService {
       });
     }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.loadMap();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
-
   }
 
   loadMap() {
-
-    /*this.geolocation.watchPosition().subscribe(resp => {
-      let latLng = new google.maps.LatLng(
-        resp.coords.latitude,
-        resp.coords.longitude
-      );
-      let mapOptions = {
-        center: latLng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        styles: this.estiloMapa,
-        mapTypeControl: false,
-        fullscreenControl: false
-      };
-      this.mIubicacion = latLng;
-
-      this.map = new google.maps.Map(
-        this.mapElement.nativeElement,
-        mapOptions
-      );
-      this.directionsRenderer.setMap(this.map);
-      this.directionsRenderer.setPanel(
-        document.getElementById("directionsPanel")
-      );
-
-      console.log("mi ubicacion " + latLng.lat() + "--" + latLng.lng());
-      
-      this.imagen = "../../assets/icon/persona.png";
-      this.agregarMarcador(latLng.lat(), latLng.lng());
-    
-      if(this.autoEstacionado){
-        console.log("ubicacion auto" + this.ubicacionAuto.lat() + "--" + this.ubicacionAuto.lng());  
-        this.imagen = "../../assets/icon/car.png";
-        this.agregarMarcador(this.ubicacionAuto.lat(), this.ubicacionAuto.lng());
-      }
-
-      this.map.addListener("click", event => {
-        console.log(event.latLng.lat());
-        console.log(event.latLng.lng());
-        if (!this.existeMarcador) {
-          this.imagen = "../../assets/icon/car.png";
-          this.agregarMarcador(event.latLng.lat(), event.latLng.lng());
-        }
-        //AGREGAR CONDICION PARA QUE SE OCULTE CUANDO NO ES CLIC EN MARCADOR
-        //this.map.infowindow().close();
-      });
-
-      this.map.addListener("mouseup", event => {
-        console.log("evento mouseup");
-        console.log(event);
-        
-        if(!this.autoEstacionado){
-        console.log(event.latLng.lat());
-        console.log(event.latLng.lng());
-        this.ubicacionAuto = new google.maps.LatLng(
-          event.latLng.lat(),
-          event.latLng.lng()
-        );        
-        this.mostrarEstacionar = true;
-        }
-
-      });
-    });*/
-
 
     this.geolocation
       .getCurrentPosition()
@@ -160,7 +95,6 @@ export class VerAutoPage extends EstilosMapaService {
           center: latLng,
           zoom: 15,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          styles: this.estiloMapa,
           mapTypeControl: false,
           fullscreenControl: false
         };
@@ -170,6 +104,7 @@ export class VerAutoPage extends EstilosMapaService {
           this.mapElement.nativeElement,
           mapOptions
         );
+
         this.directionsRenderer.setMap(this.map);
         this.directionsRenderer.setPanel(
           document.getElementById("directionsPanel")
@@ -225,7 +160,19 @@ export class VerAutoPage extends EstilosMapaService {
             
           }
         });
-        
+
+        /**
+         * Cambia el estilo del mapa segun la hora
+         */
+        const observadorHora = this.obtenerHora(this.map).subscribe({
+          next(estiloMapa) {    
+            console.log("Estilo mapa: ");
+            console.log(estiloMapa);            
+          },
+          error(msg) {
+            console.log("Error al modificar estilo mapa: ", msg);
+          }
+        });
       })
       .catch(error => {
         console.log("Error getting location", error);
@@ -536,5 +483,4 @@ const locations = new Observable((observer) => {
  return locations;
 
 }
-
 }
