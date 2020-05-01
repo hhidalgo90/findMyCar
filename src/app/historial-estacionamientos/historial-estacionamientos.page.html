@@ -13,52 +13,26 @@
 
 <ion-content [scrollEvents]= "true">
   <div padding>
-  <ion-grid>
-  <ion-row>
-    <ion-col>
-      <div class="ion-text-center">
-      <ion-label><h2>Direccion</h2></ion-label>
-    </div>
-    </ion-col>
-
-    <ion-col>
-      <div class="ion-text-center">
-      <ion-label><h2>Fecha</h2></ion-label>
-    </div>
-    </ion-col>
-
-    <ion-col>
-      <div class="ion-text-center">
-      <ion-label><h2>Direccion</h2></ion-label>
-    </div>
-    </ion-col>
-
-  </ion-row>
 
   <div *ngIf="!sinDatos">
 
-      <ion-row  *ngFor="let item of historialEstacionamientos">
-        <ion-col>
-          <div class="ion-text-center">
-          <ion-label><h3>{{item.direccion}} </h3></ion-label>
-        </div>
-        </ion-col>
+    <div *ngFor="let item of historialEstacionamientos" class="ion-text-center" mode="md">
+    <ion-card button = "true" color="light">
+      <ion-card-header>
+        <ion-card-title>{{item.fechaEstacionamiento}} </ion-card-title>
+        <ion-card-subtitle>{{item.direccion}}</ion-card-subtitle>
+      </ion-card-header>
     
-        <ion-col>
-          <div class="ion-text-center">
-          <ion-label><h3>{{item.fechaEstacionamiento}}</h3></ion-label>
-        </div>
-        </ion-col>
-    
-        <ion-col>
-          <div class="ion-text-center" *ngIf="item.autoEstacionado == true">
+      <ion-card-content>
+        <div class="ion-text-center" *ngIf="item.autoEstacionado == true">
           <ion-button (click)="mostrarEnMapa(item)" id="botonPosicion"> <ion-icon name="pin"></ion-icon> </ion-button>
         </div>
         <div class="ion-text-center" *ngIf="item.autoEstacionado == false">
           <ion-label><h3>Viaje finalizado</h3></ion-label>
         </div>
-        </ion-col>
-      </ion-row>
+      </ion-card-content>
+    </ion-card>    
+    </div>    
 
 </div>
 
@@ -68,9 +42,7 @@
     <ion-label><h3>Actualmente no registra datos. </h3></ion-label>
   </div>
   </ion-col>
-</div>
-  
-  </ion-grid>
+</div>  
 </div>
 
 
