@@ -1,30 +1,18 @@
-<ion-header>
-  <ion-button (click)="cerrarModal()" color="warning" shape="round" fill="outline" class="ion-float-right">
-    <ion-icon slot="start" name="locate"></ion-icon>
-    Cerrar
-  </ion-button>
-</ion-header>
+<ion-content>
+  <div>
+    <ion-grid>
+      <ion-col text-center>
+        <ion-img src="assets/icon/warning.jpg" class="imagenModal"></ion-img>
+        <h4 justify-content-center>
+          <p>{{texto}}</p>
+        </h4>
+      </ion-col>
 
-<ion-content class="ion-padding">
-
-  <ion-slides type="ios" pager="true" [options]="slideOpts">
-
-    <ion-slide>
-      <img src="../../assets/slides/slide-1.png"/>
-    </ion-slide>
-
-    <ion-slide>
-      <img src="../../assets/slides/mapa.png"/>
-    </ion-slide>
-
-    <ion-slide>
-      <img src="../../assets/slides/alerta.png"/>
-    </ion-slide>
-
-    <ion-slide>
-      <img src="../../assets/slides/slide-4.png"/>
-    </ion-slide>
-
-  </ion-slides>
-
+      <ion-row>
+        <ion-col text-center>
+          <ion-button expand="block" (click)="cerrarModal()" color="success">Ir al Historial</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

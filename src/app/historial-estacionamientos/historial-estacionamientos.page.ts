@@ -32,9 +32,12 @@ export class HistorialEstacionamientosPage implements OnInit {
     this.firebaseService.obtenerHistorialEstacionamiento().valueChanges().subscribe(respuesta=>{
       console.log(respuesta);
       this.historialEstacionamientos = respuesta;
-      console.log(this.historialEstacionamientos);
-      this.ordenarHistorial(this.historialEstacionamientos);
-      if(this.historialEstacionamientos.length <= 0){
+
+      if(this.historialEstacionamientos.length > 0){
+        console.log(this.historialEstacionamientos);
+        this.ordenarHistorial(this.historialEstacionamientos);
+      }
+      else{
         this.sinDatos = true;
       }
       loading.dismiss();

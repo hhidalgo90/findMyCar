@@ -4,7 +4,8 @@ import {
   NativeGeocoder,
   NativeGeocoderOptions
 } from "@ionic-native/native-geocoder/ngx";
-import { ModalController, ToastController  } from "@ionic/angular";
+import { ModalController, ToastController, LoadingController  } from "@ionic/angular";
+import { ModalRegistresePage } from "../modal-registrese/modal-registrese.page";
 import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page";
 import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
@@ -40,6 +41,7 @@ export class VerAutoPage extends EstilosMapaService {
   longitud: Number;
   arrayMarkers = new Array<any>();
   idItemEstacionar : String;
+  historialEstacionamientos : any[];
 
   constructor(
     private geolocation: Geolocation,
@@ -48,7 +50,8 @@ export class VerAutoPage extends EstilosMapaService {
     private router : Router,
     private firebaseService: FirebaseService,
     private route: ActivatedRoute,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public loadingCtrl: LoadingController
   ) {
       super();
       this.mostrarBtnLlegar = false;
@@ -56,6 +59,7 @@ export class VerAutoPage extends EstilosMapaService {
       this.existeMarcador = false;
       this.mostrarEstacionar = false;
       this.autoEstacionado = false;
+
 
       this.route.queryParams.subscribe(params => {
         console.log("params");
@@ -74,10 +78,14 @@ export class VerAutoPage extends EstilosMapaService {
           this.imagen = "../../assets/icon/car.png";
           this.agregarMarcadorAuto(latLng.lat(), latLng.lng());
         }
-      });
+        else {
+            this.tieneViajesPendientes();
+        }
+      })
+      
     }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.loadMap();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
   }
@@ -482,5 +490,48 @@ const locations = new Observable((observer) => {
 });
  return locations;
 
+}
+
+async tieneViajesPendientes(){
+  console.log("[tieneViajesPendientes] Inicio");
+  let validaViaje = false;
+  const loading = await this.loadingCtrl.create({      
+    duration: 1000,
+    message: "Obteniendo historial"
+  });
+  this.firebaseService.obtenerHistorialEstacionamiento().valueChanges().subscribe(respuesta=>{
+    console.log(respuesta);
+    this.historialEstacionamientos = respuesta;
+    console.log(this.historialEstacionamientos);
+    if(this.historialEstacionamientos.length > 0){
+      for(var i = 0; i < this.historialEstacionamientos.length; i++){
+        if(this.historialEstacionamientos[i].autoEstacionado == true){
+          validaViaje = true;
+          break;
+        }
+      }
+    }
+    console.log( validaViaje);
+    if(validaViaje){
+      this.mostrarModalPendiente();
+    }
+    
+    loading.dismiss();
+  });
+  return await loading.present();
+  
+}
+
+async mostrarModalPendiente() {
+  const modal = await this.modalController.create({
+    component: ModalRegistresePage,
+    componentProps: {
+      texto: "Hemos detectado que tiene un viaje pendiente de cierre, favor dirigase al modulo ´Historial´ y finalice el viaje"
+    },
+    mode: "ios",
+    cssClass: "modalClass2",
+    backdropDismiss: false
+  });
+  return await modal.present();
 }
 }

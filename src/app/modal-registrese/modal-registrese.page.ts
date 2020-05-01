@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-registrese',
@@ -7,21 +8,19 @@ import { ModalController, NavParams } from '@ionic/angular';
   styleUrls: ['./modal-registrese.page.scss'],
 })
 export class ModalRegistresePage implements OnInit {
-  slideOpts = {
-    initialSlide: 0,
-    speed: 400
-  };
+  @Input() texto: String;
 
-  constructor(public modalController: ModalController, navParams: NavParams) { }
+  constructor(public modalController: ModalController, navParams: NavParams, private router : Router) { }
 
   ngOnInit() {
   }
 
   cerrarModal() {
+    this.router.navigateByUrl("/usuarioLogueado/historialEstacionamientos");
     // using the injected ModalController this page
     // can "dismiss" itself and optionally pass back data
     this.modalController.dismiss({
-      'dismissed': true
+      'dismissed': true      
     });
   }
 

@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { formatDate } from '@angular/common';
-import { $ } from 'protractor';
 
 
 @Injectable({
@@ -60,7 +58,6 @@ export class FirebaseService {
         .doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`).collection("historialEstacionamientos").doc(`estacionamiento${id}`)
         .set({ latitud , longitud, direccion, fechaEstacionamiento, autoEstacionado, id}).then(resp=>{
           console.log(resp);
-          this.obtenerHistorialEstacionamiento();
           window.sessionStorage.setItem("idEstacionamiento", id);
         })
         .catch(error=>{
