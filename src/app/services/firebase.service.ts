@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentData } from 'angularfire2/firestore';
 import { formatDate } from '@angular/common';
 
 
@@ -11,17 +11,18 @@ import { formatDate } from '@angular/common';
 })
 export class FirebaseService {
   coleccionEstacionamientos : AngularFirestoreCollection<any[]>;
+  datosUsuario : AngularFirestoreDocument<DocumentData>;
   constructor(private firestore: AngularFirestore) { }
 
 
-  registrarUsuario(emailUser : string , pass : string): Promise<any>{
-    console.log("[FirebaseService] [registrarUsuario] " + emailUser + " " + pass);
-    return firebase.auth().createUserWithEmailAndPassword(emailUser, pass)
+  registrarUsuario(nombre: string, edad : number,  emailUser: string, sexo : number, passUser : string): Promise<any>{
+    console.log("[FirebaseService] [registrarUsuario] " + emailUser + " " + passUser);
+    return firebase.auth().createUserWithEmailAndPassword(emailUser, passUser)
     .then((newUserCredential: firebase.auth.UserCredential) => {
       firebase
         .firestore()
         .doc(`/usuariosRegistrados/${newUserCredential.user.uid}`)
-        .set({ emailUser});
+        .set({ nombre, edad, emailUser, sexo});
         return newUserCredential;
     })
     .catch(error => {
@@ -90,4 +91,18 @@ estacionarVehiculo(idEstacionamiento : String) : Promise<any>{
           throw new Error(error);
         })
 }
+
+
+obtenerDatosUsuario():  AngularFirestoreDocument<DocumentData>{
+  if(firebase.auth().currentUser && firebase.auth().currentUser.uid != null){
+    console.log(firebase.auth().currentUser.uid);    
+      this.datosUsuario = this.firestore.doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`);
+      console.log("despue de obtener datos del usuario a firebase");      
+      console.log(this.datosUsuario);
+      return this.datosUsuario;
+  }else{
+    console.log("user null");  
+  }
+}
+
 }

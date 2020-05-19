@@ -25,6 +25,10 @@ export class AppComponent {
     },
   ]
   public esUsuarioLogueado : String;
+  public nombreUsuario : string;
+  public sexoUsuario : number;
+  public imagen : string;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -91,6 +95,10 @@ export class AppComponent {
       loading.dismiss();
       console.log("llegue a cerrar sesion");
       window.sessionStorage.setItem("usuarioLogueado" , "false");
+      window.sessionStorage.setItem("nombreUsuarioLogueado" , "");
+      window.sessionStorage.setItem("sexoUsuarioLogueado" , "");
+      this.nombreUsuario = "";
+      this.sexoUsuario = 0;
       this.router.navigateByUrl("/menuApp");
     });
 
@@ -106,4 +114,18 @@ export class AppComponent {
       return false;
     }
   }
+
+  menuAbierto(){
+    this.nombreUsuario = window.sessionStorage.getItem("nombreUsuarioLogueado");
+    this.sexoUsuario = +window.sessionStorage.getItem("sexoUsuarioLogueado");
+    console.log("datos usuario logueado");
+    
+    if(this.sexoUsuario == 1){ //1 = hombre
+      this.imagen = "../../assets/avatar/hombre.jpg";
+    }else{
+      this.imagen = "../../assets/avatar/mujer.jpg";
+    }
+    
+  }
+
 }

@@ -10,7 +10,8 @@ import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page
 import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
-import { Observable, ObjectUnsubscribedError } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 
 declare var google;
 
@@ -35,6 +36,7 @@ export class VerAutoPage extends EstilosMapaService {
   markerCar = new google.maps.Marker();
   imagen: string;
   mostrarEstacionar: boolean;
+  mostrarCentrar: boolean;
   autoEstacionado : boolean;
   esUsuarioLogueado : String;
   latitud : Number;
@@ -42,6 +44,7 @@ export class VerAutoPage extends EstilosMapaService {
   arrayMarkers = new Array<any>();
   idItemEstacionar : String;
   historialEstacionamientos : any[];
+  validaViaje : any;
 
   constructor(
     private geolocation: Geolocation,
@@ -51,13 +54,15 @@ export class VerAutoPage extends EstilosMapaService {
     private firebaseService: FirebaseService,
     private route: ActivatedRoute,
     public toastController: ToastController,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    private insomnia: Insomnia
   ) {
       super();
       this.mostrarBtnLlegar = false;
       this.mostrarMarcador = true;
       this.existeMarcador = false;
       this.mostrarEstacionar = false;
+      this.mostrarCentrar = false;
       this.autoEstacionado = false;
 
 
@@ -81,6 +86,12 @@ export class VerAutoPage extends EstilosMapaService {
         else {
             this.tieneViajesPendientes();
         }
+
+        //mantiene pantalla prendida mientras este en esta pagina.
+        this.insomnia.keepAwake().then(
+        () => console.log('success'),
+        () => console.log('error')
+        );
       })
       
     }
@@ -150,6 +161,7 @@ export class VerAutoPage extends EstilosMapaService {
             event.latLng.lng()
           );        
           this.mostrarEstacionar = true;
+          this.mostrarCentrar = true;
           }
           });
 
@@ -397,6 +409,7 @@ export class VerAutoPage extends EstilosMapaService {
     this.arrayMarkers = [];
     
     this.mostrarEstacionar= false;
+    this.mostrarCentrar = false;
     this.mostrarBtnLlegar = false;
     this.autoEstacionado = false;
     this.mostrarMarcador = true;
@@ -430,6 +443,10 @@ export class VerAutoPage extends EstilosMapaService {
   }
 
   volverHome(){
+    //Permito que se apague la pantalla una vez salgo de la pagina.
+    this.insomnia.allowSleepAgain().then(
+      () => console.log('success'),
+      () => console.log('error'));
     this.router.navigateByUrl("/usuarioLogueado");
   }
 
@@ -494,26 +511,28 @@ const locations = new Observable((observer) => {
 
 async tieneViajesPendientes(){
   console.log("[tieneViajesPendientes] Inicio");
-  let validaViaje = false;
+  //let validaViaje = false;
   const loading = await this.loadingCtrl.create({      
     duration: 1000,
     message: "Obteniendo historial"
   });
-  this.firebaseService.obtenerHistorialEstacionamiento().valueChanges().subscribe(respuesta=>{
+  const suscriptor = this.firebaseService.obtenerHistorialEstacionamiento().valueChanges().subscribe(respuesta=>{
     console.log(respuesta);
     this.historialEstacionamientos = respuesta;
     console.log(this.historialEstacionamientos);
     if(this.historialEstacionamientos.length > 0){
       for(var i = 0; i < this.historialEstacionamientos.length; i++){
         if(this.historialEstacionamientos[i].autoEstacionado == true){
-          validaViaje = true;
+          this.validaViaje = true;
           break;
         }
       }
     }
-    console.log( validaViaje);
-    if(validaViaje){
+    console.log(this.validaViaje);
+    if(this.validaViaje){
       this.mostrarModalPendiente();
+      this.validaViaje = false;
+      suscriptor.unsubscribe();
     }
     
     loading.dismiss();

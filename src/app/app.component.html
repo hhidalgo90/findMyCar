@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane>
-  <ion-menu side="start" menuId="menuApp"  type="overlay">
+  <ion-menu side="start" menuId="menuApp"  type="overlay" (ionDidOpen)= "menuAbierto()">
     <ion-header>
       <ion-toolbar translucent>
         <ion-img id="logoApp" src="../../assets/icon/logoApp.png"></ion-img>
@@ -12,12 +12,12 @@
         <ion-col>
           <div>            
             <ion-avatar>
-              <img src="../../assets/avatar/hombre.jpg">
+              <img src="{{imagen}}">
             </ion-avatar>
           </div>
         </ion-col>
         <ion-col class="ion-margin-end">
-          <ion-list-header>Bienvenid@ {{nombre}}</ion-list-header>
+          <ion-list-header>Bienvenid@ {{nombreUsuario}}</ion-list-header>
         </ion-col>
         <ion-col></ion-col>
         </ion-row>

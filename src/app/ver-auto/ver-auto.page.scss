@@ -37,13 +37,27 @@
     font-size: large;
   }
 
+  #btnCentrar {
+    position: absolute;
+    height: 40px;
+    width: 45%;
+    top: 65%;
+    left: 10%;
+    margin-left: -35px;
+    margin-top: -10px;
+    font-size: large;
+  }
+
   #contenedorOpciones{
     height: 30%;
     width: 100%;
     position: absolute;
     top: 70%;
     background-color:#f4f5f8;
-    border-top: solid 1px black;
+    border: solid 1px black;
+    border-radius: 10%;
+    margin-left: 10px;
+    width: 95%;
   }
 }
 

@@ -17,15 +17,17 @@ import { ModalRegistresePage } from './modal-registrese/modal-registrese.page';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
 import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
+import { RegistroUsuarioPage } from './registro-usuario/registro-usuario.page';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx'
 import { AngularFirestore } from 'angularfire2/firestore';
 import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig) ],
@@ -38,6 +40,7 @@ import { Device } from '@ionic-native/device/ngx';
     AngularFirestore,
     FirebaseMessaging,
     Device,
+    Insomnia,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

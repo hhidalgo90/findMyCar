@@ -51,7 +51,8 @@ export class MenuPage implements OnInit {
   }
 
   loginEmailPass(){
-    this.mostrarEmailPass = true;
+    //this.mostrarEmailPass = true;
+    this.router.navigateByUrl("/registroUsuario");
   }
 
   mostrarMenu(){
@@ -98,44 +99,6 @@ export class MenuPage implements OnInit {
       }
     );  
 }
-
-async registrarUsuario(): Promise<void> {
-  console.log("registrarUsuario");
-  this.loading = await this.loadingCtrl.create({      
-    duration: 1000,
-    message: "Registrando usuario.."
-  });
-  await this.loading.present();
-  
-  this.firebaseService.registrarUsuario(this.emailUser, this.passUser).then(resp =>{
-    console.log(resp);
-    console.log(resp.additionalUserInfo.isNewUser);
-    let navigationExtras: NavigationExtras = {
-      queryParams: {
-        esUsuarioNuevo : resp.additionalUserInfo.isNewUser
-      }
-    };
-
-    this.loading.dismiss().then(() => {      
-      window.sessionStorage.setItem("usuarioLogueado", "true"); //variable de session para guardar si el usuario esta logueado
-      console.log("Registrar usuario: esLogueado: " + window.sessionStorage.getItem("usuarioLogueado"));
-
-      this.router.navigate(['usuarioLogueado'], navigationExtras);
-    });
-    
-  },
-  error => {
-    this.loading.dismiss().then(async () => {
-      const alert = await this.alertCtrl.create({
-        message: error.message,
-        buttons: [{ text: 'Ok', role: 'cancel' }],
-      });
-      await alert.present();
-    });
-  }); 
-
-}
-
 
 resetPassword(): void {
   this.firebaseService.resetPassword(this.emailSession).then(
