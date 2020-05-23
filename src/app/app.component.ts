@@ -19,8 +19,8 @@ export class AppComponent {
   public navigate  =
   [    
     {
-      title : "Contacts",
-      url   : "/contacts",
+      title : "Mis datos",
+      url   : "/datos-personales",
       icon  : "contacts"
     },
   ]
@@ -62,10 +62,9 @@ export class AppComponent {
   initializeFirebaseAndroid() {
     console.log("PUSHER Android subscribe");
     this.firebaseMessaging.subscribe("android");
-    this.firebaseMessaging.getToken().then(token => {
-      console.log(token);
-      
-    });    
+    this.firebaseMessaging.getToken().then(function(token) {
+      console.log("Got device token: ", token);
+  });   
     this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
     this.firebaseMessaging.onMessage().subscribe(message => {
       console.log("onMessage");      
