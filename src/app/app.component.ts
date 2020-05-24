@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { FirebaseService } from './services/firebase.service';
 import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +38,8 @@ export class AppComponent {
     private loadingCtrl : LoadingController,
     private firebaseService : FirebaseService,
     private firebaseMessaging: FirebaseMessaging,
-    private device: Device
+    private device: Device,
+    private firebase: Firebase
   ) {
     this.initializeApp();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
@@ -62,7 +64,7 @@ export class AppComponent {
   initializeFirebaseAndroid() {
     console.log("PUSHER Android subscribe");
     this.firebaseMessaging.subscribe("android");
-    this.firebaseMessaging.getToken().then(token => {
+    this.firebase.getToken().then(token => {
       console.log(token);
       
     });    

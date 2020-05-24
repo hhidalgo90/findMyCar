@@ -25,6 +25,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage],
@@ -41,6 +42,7 @@ import { Insomnia } from '@ionic-native/insomnia/ngx';
     FirebaseMessaging,
     Device,
     Insomnia,
+    Firebase,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

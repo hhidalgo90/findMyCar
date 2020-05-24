@@ -22,6 +22,7 @@
     "@angular/router": "~8.1.2",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/device": "^5.23.0",
+    "@ionic-native/firebase": "^5.26.0",
     "@ionic-native/firebase-authentication": "^5.22.0",
     "@ionic-native/firebase-messaging": "^5.23.0",
     "@ionic-native/geolocation": "^5.18.0",
@@ -31,8 +32,10 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.7.1",
     "angularfire2": "^5.4.2",
-    "cordova-android": "7.1.4",
+    "cordova-android": "8.1.0",
     "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-firebase": "2.0.5",
+    "cordova-plugin-firebase-analytics": "^4.2.0",
     "cordova-plugin-firebase-authentication": "^3.0.2",
     "cordova-plugin-firebase-messaging": "4.3.1",
     "cordova-plugin-geolocation": "^4.0.2",
@@ -40,9 +43,11 @@
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.1.3",
     "cordova-plugin-nativegeocoder": "^3.2.2",
-    "cordova-plugin-splashscreen": "^5.0.3",
-    "cordova-plugin-statusbar": "^2.4.3",
-    "cordova-plugin-whitelist": "^1.3.4",
+    "cordova-plugin-splashscreen": "^5.0.2",
+    "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-whitelist": "^1.3.3",
+    "cordova-support-android-plugin": "^1.0.2",
+    "cordova-support-google-services": "^1.4.0",
     "core-js": "^2.5.4",
     "firebase": "^7.10.0",
     "platform": "1.3.5",
@@ -89,9 +94,15 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-firebase-authentication": {},
-      "cordova-plugin-firebase-messaging": {},
-      "cordova-plugin-insomnia": {}
+      "cordova-plugin-firebase-authentication": {
+        "FIREBASE_AUTH_VERSION": "19.2.+"
+      },
+      "cordova-plugin-firebase-messaging": {
+        "FIREBASE_MESSAGING_VERSION": "20.1.+",
+        "ANDROIDX_CORE_VERSION": "1.0.+"
+      },
+      "cordova-plugin-insomnia": {},
+      "cordova-plugin-firebase": {}
     },
     "platforms": [
       "android"
