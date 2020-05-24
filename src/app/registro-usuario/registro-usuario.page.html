@@ -18,7 +18,7 @@
         <ion-col size="12" size-lg>
           <ion-item>
             <ion-input expand="block" type="text" placeholder="Nombre o nickname" value="{{nombre}}" [(ngModel)]="nombre"
-              name="nombreUser" formControlName="nombreUser" required></ion-input>
+              name="nombreUser" formControlName="nombreUser" required color="primary"></ion-input>
           </ion-item>
 
           <ion-item 
@@ -47,7 +47,7 @@
         <ion-col size="12" size-lg offset="0">
           <ion-item>
             <ion-input expand="block" type="text" pattern="[0-9]*" decimal="true" minlength="0" maxlength="10" button-char="." placeholder="Cuentanos tu edad" value="{{edad}}"
-              [(ngModel)]="edad" name="edadUser" formControlName="edadUser" required button-char="." decimal-char="." #amount></ion-input>
+              [(ngModel)]="edad" name="edadUser" formControlName="edadUser" required button-char="." decimal-char="." #amount color="primary"></ion-input>
           </ion-item>
 
           <ion-item no-lines
@@ -64,7 +64,7 @@
         <ion-col size="12" size-lg offset="0">
           <ion-item>
             <ion-input expand="block" type="email" placeholder="Escribe tu email" value="{{email}}"
-              [(ngModel)]="email" name="emailUser" formControlName="emailUser" required></ion-input>
+              [(ngModel)]="email" name="emailUser" formControlName="emailUser" required color="primary"></ion-input>
           </ion-item>
 
 
@@ -87,7 +87,7 @@
           <ion-item>
             <ion-label for="sexoUser">Sexo</ion-label>
             <ion-select placeholder="Seleccione uno" [(ngModel)]="sexo" name="sexoUser"
-              formControlName="sexoUser" required okText="Aceptar" cancelText="Cancelar" interface="action-sheet">
+              formControlName="sexoUser" required okText="Aceptar" cancelText="Cancelar" interface="action-sheet" color="primary">
               <ion-select-option value="{{sexo.id}}" *ngFor="let sexo of sexos">{{sexo.texto}}
               </ion-select-option>
             </ion-select>
@@ -107,7 +107,7 @@
         <ion-col size="12" size-lg offset="0">
           <ion-item>
             <ion-input expand="block" type="password" minlength="6" maxlength="10" placeholder="Ingresa contraseña" value="{{passUser}}"
-              [(ngModel)]="passUser" name="passUser" formControlName="passUser"></ion-input>
+              [(ngModel)]="passUser" name="passUser" formControlName="passUser" color="primary"></ion-input>
           </ion-item>
 
           <ion-item no-lines
@@ -125,7 +125,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class ="ion-text-right">
-        <ion-button (click)="registrarUsuario()" [disabled]="formUser.invalid">Siguiente</ion-button>
+        <ion-button (click)="registrarUsuario()" [disabled]="formUser.invalid">Enviar</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

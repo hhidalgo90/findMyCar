@@ -47,7 +47,9 @@ export class FirebaseService {
   guardarPuntoEstacionamiento(latitud : string , longitud : string, direccion : string): Promise<any>{
     console.log("[FirebaseService] [guardarPuntoEstacionamiento] " + latitud + " " + longitud);
     console.log(firebase.auth().currentUser);
-    let fechaEstacionamiento = formatDate(new Date(),'MM/dd/yyyy', 'en');
+    let fecha = formatDate(new Date(),'MM/dd/yyyy', 'en');
+    let hora = new Date();
+    let fechaEstacionamiento= fecha + "/" + hora.getHours() + ":" + hora.getMinutes();
     let autoEstacionado = true;
     
     if(firebase && firebase.auth().currentUser.uid != null){

@@ -20,8 +20,8 @@ export class AppComponent {
   public navigate  =
   [    
     {
-      title : "Contacts",
-      url   : "/contacts",
+      title : "Mis datos",
+      url   : "/datos-personales",
       icon  : "contacts"
     },
   ]

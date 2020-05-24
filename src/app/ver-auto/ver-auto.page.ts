@@ -83,9 +83,9 @@ export class VerAutoPage extends EstilosMapaService {
           this.imagen = "../../assets/icon/car.png";
           this.agregarMarcadorAuto(latLng.lat(), latLng.lng());
         }
-        else {
+        /*else {
             this.tieneViajesPendientes();
-        }
+        }*/
 
         //mantiene pantalla prendida mientras este en esta pagina.
         this.insomnia.keepAwake().then(
@@ -175,7 +175,7 @@ export class VerAutoPage extends EstilosMapaService {
             //if (resp.coords.speed > 0 && resp.coords.accuracy < 10) {
               console.log("mi ubicacion " + latLng.lat() + "--" + latLng.lng());
               this.marker.setPosition( new google.maps.LatLng(latLng.lat(), latLng.lng() ) )
-              this.map.panTo( new google.maps.LatLng(latLng.lat(), latLng.lng() ) );
+              //this.map.panTo( new google.maps.LatLng(latLng.lat(), latLng.lng() ) );
             }
             
           //}
@@ -514,7 +514,7 @@ async tieneViajesPendientes(){
   //let validaViaje = false;
   const loading = await this.loadingCtrl.create({      
     duration: 1000,
-    message: "Obteniendo historial"
+    message: "Comprobando"
   });
   const suscriptor = this.firebaseService.obtenerHistorialEstacionamiento().valueChanges().subscribe(respuesta=>{
     console.log(respuesta);
@@ -534,6 +534,10 @@ async tieneViajesPendientes(){
       this.validaViaje = false;
       suscriptor.unsubscribe();
     }
+    else{
+      this.estacionarAuto();
+      suscriptor.unsubscribe();
+    }
     
     loading.dismiss();
   });
@@ -545,7 +549,7 @@ async mostrarModalPendiente() {
   const modal = await this.modalController.create({
     component: ModalRegistresePage,
     componentProps: {
-      texto: "Hemos detectado que tiene un viaje pendiente de cierre, favor dirigase al modulo ´Historial´ y finalice el viaje"
+      texto: "Hemos detectado que tiene un viaje pendiente de cierre, favor dirigase al modulo Historial' y finalice el viaje"
     },
     mode: "ios",
     cssClass: "modalClass2",

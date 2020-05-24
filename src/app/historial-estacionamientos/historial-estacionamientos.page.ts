@@ -118,6 +118,7 @@ export class HistorialEstacionamientosPage implements OnInit {
       let mes = diaMesAnio[0];
       let dia = diaMesAnio[1];
       let anio = diaMesAnio[2];
+      let hora = diaMesAnio[3];
       let descripcionMes = "";
 
       switch (mes) {
@@ -162,7 +163,8 @@ export class HistorialEstacionamientosPage implements OnInit {
         descripcionMes = "Enero";
       }
 
-      element.fechaEstacionamiento = dia + " de " + descripcionMes + " de " + anio
+      element.fechaEstacionamiento = dia + " de " + descripcionMes + " de " + anio;
+      element.hora = hora;
 
     });
   }
