@@ -65,7 +65,7 @@ export class AppComponent {
     console.log("PUSHER Android subscribe");
     this.firebaseMessaging.subscribe("android");
     this.firebase.getToken().then(token => {
-      console.log(token);
+      console.log(token); 
       
     });    
     this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
