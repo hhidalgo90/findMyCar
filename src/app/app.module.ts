@@ -26,12 +26,18 @@ import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { Firebase } from '@ionic-native/firebase/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
+import { SMS } from '@ionic-native/sms/ngx';
+import { Sim } from '@ionic-native/sim/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
+import { HttpClient, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig) ],
+    AngularFireModule.initializeApp(environment.firebaseConfig), HttpClientModule ],
   providers: [
     StatusBar,
     SplashScreen,
@@ -43,6 +49,12 @@ import { Firebase } from '@ionic-native/firebase/ngx';
     Device,
     Insomnia,
     Firebase,
+    FCM,
+    SMS,
+    Sim,
+    AndroidPermissions,
+    HTTP,
+    HttpClient,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

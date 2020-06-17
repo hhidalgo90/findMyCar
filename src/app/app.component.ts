@@ -9,7 +9,7 @@ import { environment } from '../environments/environment';
 import { FirebaseService } from './services/firebase.service';
 import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { Firebase } from '@ionic-native/firebase/ngx';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 @Component({
   selector: 'app-root',
@@ -39,7 +39,7 @@ export class AppComponent {
     private firebaseService : FirebaseService,
     private firebaseMessaging: FirebaseMessaging,
     private device: Device,
-    private firebase: Firebase
+    private fcm: FCM
   ) {
     this.initializeApp();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
@@ -63,23 +63,34 @@ export class AppComponent {
 
   initializeFirebaseAndroid() {
     console.log("PUSHER Android subscribe");
-    this.firebaseMessaging.subscribe("android");
-    this.firebase.getToken().then(token => {
-      console.log(token); 
+    this.fcm.subscribeToTopic("android");
+    this.fcm.getToken().then(token => {
+      console.log(token);
+      window.sessionStorage.setItem("token" , token);
       
     });    
     this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
+
+    this.fcm.onNotification().subscribe(data => {
+      console.log("onNotification");
+      console.log(data);
+      
+    });
+
     this.firebaseMessaging.onMessage().subscribe(message => {
       console.log("onMessage");      
       console.log(message);      
     });
+
   }
   initializeFirebaseIOS() {
     console.log("PUSHER IOS subscribe");
     this.firebaseMessaging.subscribe("ios");
     this.firebaseMessaging.requestPermission()
       .then(() => {
-        this.firebaseMessaging.getToken().then(token => {});
+        this.firebaseMessaging.getToken().then(token => {
+          window.sessionStorage.setItem("token" , token);
+        });
         this.firebaseMessaging.onTokenRefresh().subscribe(token => {});
       })
       .catch(error => {

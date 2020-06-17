@@ -12,6 +12,10 @@ import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
 import { Observable } from 'rxjs';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { SMS } from '@ionic-native/sms/ngx';
+import { Sim } from '@ionic-native/sim/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { EnviarMensajePushService } from '../services/enviar-mensaje-push.service';
 
 declare var google;
 
@@ -55,7 +59,11 @@ export class VerAutoPage extends EstilosMapaService {
     private route: ActivatedRoute,
     public toastController: ToastController,
     public loadingCtrl: LoadingController,
-    private insomnia: Insomnia
+    private insomnia: Insomnia,
+    private sim: Sim,
+    private sms: SMS,
+    private androidPermissions: AndroidPermissions,
+    private enviarMensajePushService : EnviarMensajePushService
   ) {
       super();
       this.mostrarBtnLlegar = false;
@@ -388,6 +396,11 @@ export class VerAutoPage extends EstilosMapaService {
     this.mostrarMarcador = false;
     this.autoEstacionado = true;
 
+    this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
+      console.log("enviarMensajePush");      
+      console.log(resp);      
+    });
+
   }
 
   centrarMapa(){
@@ -420,6 +433,7 @@ export class VerAutoPage extends EstilosMapaService {
       let idEstacionamiento = (this.idItemEstacionar!= null && this.idItemEstacionar != "") ? this.idItemEstacionar : window.sessionStorage.getItem("idEstacionamiento");
       this.firebaseService.estacionarVehiculo(idEstacionamiento).then(async ()=>{
         console.log("Auto recuperado con exito");
+        //this.sendSms();
         this.idItemEstacionar = "";
         const toast = await this.toastController.create({
           message: 'Vehiculo recuperado con exito.',
@@ -556,5 +570,50 @@ async mostrarModalPendiente() {
     backdropDismiss: false
   });
   return await modal.present();
+}
+
+sendSms(){
+  console.log("sendSMS");
+  
+  /*this.sim.getSimInfo().then(
+    (info) => console.log('Sim info: ', info),
+    (err) => console.log('Unable to get sim info: ', err)
+  );
+  
+  this.sim.hasReadPermission().then(
+    (info) => console.log('Has permission: ', info)
+  );
+  
+  this.sim.requestReadPermission().then(
+    () => console.log('Permission granted'),
+    //() => console.log('Permission denied')
+  );*/
+    console.log("antes de enviar sms");
+
+    this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.SEND_SMS);
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.SEND_SMS).then(
+      result => console.log('Has permission?',result.hasPermission),
+      err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.SEND_SMS)
+    );
+
+  this.sms.hasPermission().then(data => {
+    console.log(data);
+    if(data){
+      var options = {
+        replaceLineBreaks: false, // true to replace \n by a new line, false by default
+        android: {
+            intent: 'INTENT'  // send SMS with the native android SMS messaging
+            //intent: '' // send SMS without opening any other app
+        }
+    };
+      this.sms.send('962234900', 'Su vehiculo fue recuperado con exito', options);
+      this.sms.send('962234900', 'Su vehiculo fue recuperado con exito', options).then(data => {
+        console.log(data);    
+      });
+    }
+    else {
+      console.log("Usuario no dio permisos para enviar sms");      
+    }    
+  });
 }
 }
