@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from "@angular/core";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import {
   NativeGeocoder,
@@ -10,14 +10,18 @@ import { ModalComoLlegarPage } from "../modal-como-llegar/modal-como-llegar.page
 import { Router, ActivatedRoute } from '@angular/router';
 import { EstilosMapaService } from '../services/estilos-mapa.service';
 import { FirebaseService } from '../services/firebase.service';
-import { Observable } from 'rxjs';
+import { Observable, observable } from 'rxjs';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { SMS } from '@ionic-native/sms/ngx';
 import { Sim } from '@ionic-native/sim/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { EnviarMensajePushService } from '../services/enviar-mensaje-push.service';
+import { LoadingServiceService } from '../services/loading-service.service'
+import { Logs } from 'selenium-webdriver';
+
 
 declare var google;
+declare var window;
 
 @Component({
   selector: "app-ver-auto",
@@ -26,6 +30,8 @@ declare var google;
 })
 export class VerAutoPage extends EstilosMapaService {
   @ViewChild("map", { static: false }) mapElement: ElementRef;
+  @ViewChild("btn_estacionar" , {read : ElementRef, static : false}) private botonEstacionar: ElementRef;
+  @ViewChild("arrow-back" , {read : ElementRef, static : false}) private arrowBack: ElementRef;
   map: any;
   ubicacionAuto: any;
   mIubicacion: string;
@@ -39,8 +45,8 @@ export class VerAutoPage extends EstilosMapaService {
   marker = new google.maps.Marker();
   markerCar = new google.maps.Marker();
   imagen: string;
-  mostrarEstacionar: boolean;
-  mostrarCentrar: boolean;
+  mostrarEstacionar: any;
+  mostrarCentrar: any;
   autoEstacionado : boolean;
   esUsuarioLogueado : String;
   latitud : Number;
@@ -49,6 +55,7 @@ export class VerAutoPage extends EstilosMapaService {
   idItemEstacionar : String;
   historialEstacionamientos : any[];
   validaViaje : any;
+  glosaDireccion : any;
 
   constructor(
     private geolocation: Geolocation,
@@ -63,7 +70,9 @@ export class VerAutoPage extends EstilosMapaService {
     private sim: Sim,
     private sms: SMS,
     private androidPermissions: AndroidPermissions,
-    private enviarMensajePushService : EnviarMensajePushService
+    private enviarMensajePushService : EnviarMensajePushService,
+    private loadingService : LoadingServiceService,
+    private renderer: Renderer2
   ) {
       super();
       this.mostrarBtnLlegar = false;
@@ -72,7 +81,6 @@ export class VerAutoPage extends EstilosMapaService {
       this.mostrarEstacionar = false;
       this.mostrarCentrar = false;
       this.autoEstacionado = false;
-
 
       this.route.queryParams.subscribe(params => {
         console.log("params");
@@ -109,8 +117,7 @@ export class VerAutoPage extends EstilosMapaService {
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
   }
 
-  loadMap() {
-
+  loadMap() {    
     this.geolocation
       .getCurrentPosition()
       .then(resp => {
@@ -139,6 +146,7 @@ export class VerAutoPage extends EstilosMapaService {
 
         this.imagen = "../../assets/icon/persona.png";
         this.agregarMarcador(latLng.lat(), latLng.lng());
+        this.cargarUbicacion();
       
         if(this.autoEstacionado){
           console.log("ubicacion auto" + this.ubicacionAuto.lat() + "--" + this.ubicacionAuto.lng());  
@@ -156,22 +164,6 @@ export class VerAutoPage extends EstilosMapaService {
           //AGREGAR CONDICION PARA QUE SE OCULTE CUANDO NO ES CLIC EN MARCADOR
           //this.map.infowindow().close();
         });
-  
-        this.map.addListener("mouseup", event => {
-          console.log("evento mouseup");
-          console.log(event);
-          
-          if(!this.autoEstacionado){
-          console.log(event.latLng.lat());
-          console.log(event.latLng.lng());
-          this.ubicacionAuto = new google.maps.LatLng(
-            event.latLng.lat(),
-            event.latLng.lng()
-          );        
-          this.mostrarEstacionar = true;
-          this.mostrarCentrar = true;
-          }
-          });
 
         this.geolocation.watchPosition().subscribe(resp => {
           if(resp.coords !== undefined && this.marker !== undefined){
@@ -205,6 +197,45 @@ export class VerAutoPage extends EstilosMapaService {
       .catch(error => {
         console.log("Error getting location", error);
       });
+  }
+  cargarUbicacion(){
+    console.log(this.botonEstacionar);
+          
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({location : this.map.getCenter()} , results => {
+      console.log(results[0].geometry.location.lat());
+      console.log(results[0].geometry.location.lng());
+      
+
+      var direccion = results[0].address_components[1].long_name + " " + results[0].address_components[0].long_name;
+      
+      this.glosaDireccion = direccion;
+      console.log(this.glosaDireccion);
+      this.observadorCambiosLabel(this.glosaDireccion);
+
+
+    if(!this.autoEstacionado){
+      console.log(results[0].geometry.location.lat());
+      console.log(results[0].geometry.location.lng());
+      this.ubicacionAuto = new google.maps.LatLng(
+        results[0].geometry.location.lat(),
+        results[0].geometry.location.lng()
+      );        
+      this.mostrarEstacionar = true;
+      this.mostrarCentrar = true;
+      
+      }
+      console.log("evento dragend fin");
+    });
+  }
+
+  observadorCambiosLabel(glosaDireccion : any){
+    console.log("observadorCambiosLabel");
+    
+    const node = document.querySelector(".glosaDireccion");
+      console.log(node);
+      console.log(node.textContent);
+      node.textContent = glosaDireccion;
   }
 
   agregarMarcador(lat, long) {
@@ -348,7 +379,7 @@ export class VerAutoPage extends EstilosMapaService {
   }
 
   estacionarAuto() {
-    console.log("estacionar auto");
+    console.log("estacionar auto");    
     this.imagen = "../../assets/icon/car.png";
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode(
@@ -363,6 +394,7 @@ export class VerAutoPage extends EstilosMapaService {
 
         this.firebaseService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng(), results[0].formatted_address).then(resp=>{
           console.log("ubicacion vehiculo guardado con exito en firebase");
+          this.activarSeguimiendoSegundoplano();
           window.sessionStorage.getItem("idEstacionamiento");
           console.log(window.sessionStorage.getItem("idEstacionamiento"));
           
@@ -371,21 +403,25 @@ export class VerAutoPage extends EstilosMapaService {
           console.log("ocurrio un error al guardar ubicacion del vehiculo en firebase: " + error);
           
         });
-
+        
         // Call subscribe() to start listening for updates.
-        const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0]).subscribe({
+        const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0], this.enviarMensajePushService).subscribe({
           next(distanciaEntrePuntos) {
             console.log("Distancia entre los puntos: ");
             console.log(distanciaEntrePuntos);
             
-            if(distanciaEntrePuntos > 0.1){
-              alert("te estan pelando el toco");
+            /*if(distanciaEntrePuntos > 0.1){
+              //alert("te estan pelando el toco");
+              this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
+                console.log("enviarMensajePush");      
+                console.log(resp);      
+              });
               locationsSubscription.unsubscribe();
               if(this.esLogueado){
                 console.log("estoy logueado");
                 
               }
-            }
+            }*/
           },
           error(msg) {
             console.log("Error Getting Location: ", msg);
@@ -395,12 +431,6 @@ export class VerAutoPage extends EstilosMapaService {
     );
     this.mostrarMarcador = false;
     this.autoEstacionado = true;
-
-    this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
-      console.log("enviarMensajePush");      
-      console.log(resp);      
-    });
-
   }
 
   centrarMapa(){
@@ -442,6 +472,7 @@ export class VerAutoPage extends EstilosMapaService {
           color: "success"
         });
         toast.present();
+        this.desactivarSeguimiendoSegundoplano();
       })
       .catch(async error=>{
         console.error("Ocurrio un error al recuperar el auto");
@@ -479,7 +510,7 @@ export class VerAutoPage extends EstilosMapaService {
    * Funcion que retorna un observable con la distancia entre dos puntos.
    * @param results 
    */
-  obtenerDistanciaEntrePuntos(ubicacionVehiculo : any): Observable<any> {
+  obtenerDistanciaEntrePuntos(ubicacionVehiculo : any, enviarMensajePushService): Observable<any> {
     console.log("obtenerDistanciaEntrePuntos : " + ubicacionVehiculo);
     
   // Create an Observable that will start listening to geolocation updates
@@ -490,6 +521,13 @@ const locations = new Observable((observer) => {
   const watchId  = this.geolocation.watchPosition().subscribe(position => {
   console.log(position.coords.longitude + ' ' + position.coords.latitude);
   let distanciaEntrePuntos = getDistanceFromLatLonInKm(position.coords.latitude,position.coords.longitude ,ubicacionVehiculo.geometry.location.lat(),ubicacionVehiculo.geometry.location.lng());
+  if(distanciaEntrePuntos > 0.1){
+    //alert("te estan pelando el toco");
+    this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
+      console.log("enviarMensajePush");      
+      console.log(resp);      
+    });
+    }
   observer.next(distanciaEntrePuntos);
 });
 
@@ -615,5 +653,31 @@ sendSms(){
       console.log("Usuario no dio permisos para enviar sms");      
     }    
   });
+}
+
+
+activarSeguimiendoSegundoplano(){
+  console.log("[activarSeguimiendoSegundoplano] Inicio");
+  
+  window.app.backgroundGeolocation.start();
+}
+
+desactivarSeguimiendoSegundoplano(){
+  console.log("[desactivarSeguimiendoSegundoplano] Inicio");
+  
+  window.app.backgroundGeolocation.stop();
+}
+
+touchstart(event){
+  console.log("touch start");
+  
+  console.log(event);
+  
+}
+
+touchend(event){
+  console.log("touch end");
+  console.log(event);
+  this.cargarUbicacion();
 }
 }

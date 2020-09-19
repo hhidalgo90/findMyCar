@@ -25,4 +25,19 @@
      vertical-align: middle;
    }
 
+   /* Without setting height the slides will take up the height of the slide's content */
+ion-slides {
+  height: 100%;
+}
+
+.imgSlide {
+  height: 100%;
+  width: 100%;
+  margin-top: -80px;
+}
+
+.btn-slides{
+  margin-top: -2%;
+}
+
 

@@ -32,6 +32,8 @@ import { Sim } from '@ionic-native/sim/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClient, HttpClientModule} from '@angular/common/http';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage],
@@ -55,6 +57,8 @@ import { HttpClient, HttpClientModule} from '@angular/common/http';
     AndroidPermissions,
     HTTP,
     HttpClient,
+    BackgroundMode,
+    BackgroundGeolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

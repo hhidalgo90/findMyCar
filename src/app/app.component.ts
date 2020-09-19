@@ -10,6 +10,10 @@ import { FirebaseService } from './services/firebase.service';
 import { FirebaseMessaging } from '@ionic-native/firebase-messaging/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { FCM } from '@ionic-native/fcm/ngx';
+import { BackgroundGeolocation, BackgroundGeolocationConfig, BackgroundGeolocationEvents, BackgroundGeolocationResponse } from '@ionic-native/background-geolocation/ngx';
+
+declare var cordova: Cordova;
+declare var window;
 
 @Component({
   selector: 'app-root',
@@ -39,7 +43,8 @@ export class AppComponent {
     private firebaseService : FirebaseService,
     private firebaseMessaging: FirebaseMessaging,
     private device: Device,
-    private fcm: FCM
+    private fcm: FCM,
+    private backgroundGeolocation: BackgroundGeolocation
   ) {
     this.initializeApp();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
@@ -49,6 +54,9 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      console.log("antes de iniciar seguimiento segundo plano");      
+      this.activarSeguimiendoSegundoplano();
+
       if(!firebase.apps.length){
         firebase.initializeApp(environment.firebaseConfig);
       }
@@ -140,5 +148,79 @@ export class AppComponent {
     }
     
   }
+
+
+  activarSeguimiendoSegundoplano(){
+    console.log("[activarSeguimiendoSegundoplano] Inicio");
+    
+      const config: BackgroundGeolocationConfig = {
+        desiredAccuracy: 10,
+        stationaryRadius: 20,
+        distanceFilter: 30,
+        debug: true, //  enable this hear sounds for background-geolocation life-cycle.
+        stopOnTerminate: false, // enable this to clear background location settings when the app terminates
+        notificationTitle: 'Background tracking',
+        notificationText: 'enabled'
+    };
+    
+    
+    this.backgroundGeolocation.configure(config)
+      .then(() => {
+    
+        this.backgroundGeolocation.on(BackgroundGeolocationEvents.location).subscribe((location: BackgroundGeolocationResponse) => {
+          console.log("location");
+          console.log(location);
+          this.backgroundGeolocation. startTask().then(taks => {
+            console.log("Star task:");
+            console.log(taks);
+            
+            
+          }).catch(error =>{
+            console.log("Star task [ERROR]" + error);
+            
+          });
+          
+    
+          // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+          // and the background-task may be completed.  You must do this regardless if your operations are successful or not.
+          // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+          this.backgroundGeolocation.finish(); // FOR IOS ONLY
+        });
+    
+        this.backgroundGeolocation.on(BackgroundGeolocationEvents.stationary).subscribe(resp => {
+          console.log("stationary");
+          console.log(resp);
+          
+          
+        });
+
+        this.backgroundGeolocation.on(BackgroundGeolocationEvents.start).subscribe(resp => {
+          console.log('[INFO] BackgroundGeolocation service has been started');         
+        });
+
+        this.backgroundGeolocation.on(BackgroundGeolocationEvents.stop).subscribe(resp => {
+          console.log('[INFO] BackgroundGeolocation service has been stopped');          
+        });
+
+        this.backgroundGeolocation.on(BackgroundGeolocationEvents.authorization).subscribe(resp => {
+          console.log("Status autorizacion background: " + resp);
+
+          this.backgroundGeolocation.checkStatus().then(status => {
+            if(status){
+              setTimeout(function() {
+                var showSettings = confirm('App requires location tracking permission. Would you like to open app settings?');
+                if (showSettings) {
+                  return this.backgroundGeolocation.showAppSettings();
+                }
+              }, 1000);
+            }
+          });
+          
+        })
+    
+      });
+      window.app = this;
+      console.log("[activarSeguimiendoSegundoplano] Fin");
+    }
 
 }

@@ -6,17 +6,19 @@
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-buttons slot="start" *ngIf="esLogueado()" class="ion-float-left" (click)="volverHome()">
-        <ion-icon name="arrow-back"></ion-icon>
+        <ion-icon name="arrow-back" id="flechaVolver" class="flechaVolver"></ion-icon>
       </ion-buttons>
     </div>
     <div id="map_center" *ngIf="mostrarMarcador">
       <img src="../../assets/icon/pin.png" />
     </div>
-    <div #map id="map"></div>
+    <div #map id="map" (touchstart)="touchstart($event)" (touchend)="touchend($event)"></div>
       <ion-button (click)="centrarMapa()" shape="round" fill="solid" expand="block" size="small" *ngIf="mostrarCentrar" id="btnCentrar">
         <ion-icon slot="start" name="locate"></ion-icon>
         Centrar
       </ion-button>
+
+
     <div class="contenedorOpciones" id="contenedorOpciones">
       <ion-grid style="height: 30%;">
         <div class="spacer"></div>
@@ -40,11 +42,12 @@
             <ion-icon slot="start" name="locate"></ion-icon>
             Limpiar mapa
           </ion-button>
+          <ion-input class="glosaDireccion ion-text-center" id="glosaDireccion" expand="block" color="primary" style="border: 3px solid green; text-align:center;">{{glosaDireccion}}</ion-input>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-float-left">
-          <ion-button (click)="tieneViajesPendientes()" shape="round" fill="solid" *ngIf="mostrarEstacionar" expand="block" size="small">
+          <ion-button #btn_estacionar id="btn_estacionar" (click)="tieneViajesPendientes()" shape="round" fill="solid" *ngIf="mostrarEstacionar" expand="block" size="small">
             <ion-icon slot="start" name="locate"></ion-icon>
             Estacioné aquí
           </ion-button>
@@ -67,6 +70,9 @@
       </ion-row>
       </ion-grid> 
     </div>
+
+
+
   </div>
   <ion-input type="hidden" [(ngModel)]="ubicacionAuto" inputmode="text"></ion-input>
   <ion-input type="hidden" [(ngModel)]="mIubicacion" inputmode="text"></ion-input>
