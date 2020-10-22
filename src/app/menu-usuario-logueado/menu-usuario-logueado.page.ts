@@ -56,9 +56,5 @@ export class MenuUsuarioLogueadoPage implements OnInit {
 
       
     });
-
-
-    
-    
   }
 }

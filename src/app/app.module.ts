@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
 import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
 import { RegistroUsuarioPage } from './registro-usuario/registro-usuario.page';
+import { SubirImagenPerfilPage } from "./subir-imagen-perfil/subir-imagen-perfil.page";
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx'
@@ -32,11 +33,11 @@ import { Sim } from '@ionic-native/sim/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClient, HttpClientModule} from '@angular/common/http';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage, SubirImagenPerfilPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig), HttpClientModule ],
@@ -57,8 +58,8 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx'
     AndroidPermissions,
     HTTP,
     HttpClient,
-    BackgroundMode,
-    BackgroundGeolocation,
+    Camera,
+    ImagePicker,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

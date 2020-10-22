@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentData } from 'angularfire2/firestore';
 import { formatDate } from '@angular/common';
 
@@ -17,20 +18,78 @@ export class FirebaseService {
 
   registrarUsuario(nombre: string, edad : number,  emailUser: string, sexo : number, passUser : string): Promise<any>{
     console.log("[FirebaseService] [registrarUsuario] " + emailUser + " " + passUser);
+   /*this.guardarImagenFirebase(imagenPerfil).then(resp => {
+      console.log("[FirebaseService] [registrarUsuario] Despues de guardar imagen en firebase");      
+      console.log(resp);
+    }).catch(error => {
+      console.error("[registrarUsuario] Error al guardar imagen en firebase.");
+      console.error(error);
+    });*/
+
     return firebase.auth().createUserWithEmailAndPassword(emailUser, passUser)
     .then((newUserCredential: firebase.auth.UserCredential) => {
       firebase
         .firestore()
         .doc(`/usuariosRegistrados/${newUserCredential.user.uid}`)
-        .set({ nombre, edad, emailUser, sexo});
+        .set({ nombre, edad, emailUser, sexo });
         return newUserCredential;
     })
     .catch(error => {
       console.error(error);
       throw new Error(error);
     });
-  
   }
+
+  guardarImagenFirebase(imagenPerfil : any) : Promise<any> {
+    console.log("[FirebaseService] [guardarImagenFirebase] Inicio: " + imagenPerfil);
+
+    let idRandom = this.firestore.createId();
+    
+    return new Promise<any>((resolve, reject) => {
+      let storageRef = firebase.storage().ref();
+      console.log("[FirebaseService] [guardarImagenFirebase] storageRef: ");
+      console.log(storageRef);
+      
+      let imageRef = storageRef.child('image').child(idRandom);
+      console.log("[FirebaseService] [guardarImagenFirebase] imageRef: ");
+      console.log(imageRef);
+
+      imageRef.putString(imagenPerfil).then(resp => {
+        console.log(resp);
+      
+      }).catch(error => {
+        console.error("[FirebaseService] [guardarImagenFirebase] Error al subir imagen a firebase");        
+        console.error(error);
+      });
+
+    /* this.encodeImageUri(imagenPerfil, function(image64){
+        imageRef.putString(image64, 'data_url')
+        .then(snapshot => {
+          snapshot.ref.getDownloadURL()
+          .then(res => resolve(res))
+        }, err => {
+          reject(err);
+        })
+      })*/
+      console.log("[FirebaseService] [guardarImagenFirebase] Fin: ");
+    });
+
+  }
+
+  encodeImageUri(imageUri, callback) {
+    var c = document.createElement('canvas');
+    var ctx = c.getContext("2d");
+    var img = new Image();
+    img.onload = function () {
+      var aux:any = this;
+      c.width = aux.width;
+      c.height = aux.height;
+      ctx.drawImage(img, 0, 0);
+      var dataURL = c.toDataURL("image/jpeg");
+      callback(dataURL);
+    };
+    img.src = imageUri;
+  };
 
   loginUser(email: string, password: string ): Promise<firebase.auth.UserCredential> {
     return firebase.auth().signInWithEmailAndPassword(email, password);

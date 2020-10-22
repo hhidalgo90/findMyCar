@@ -5,6 +5,7 @@ import { VerAutoPage } from './ver-auto/ver-auto.page';
 import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-logueado.page';
 import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
 import { RegistroUsuarioPage } from './registro-usuario/registro-usuario.page';
+import { SubirImagenPerfilPage } from "./subir-imagen-perfil/subir-imagen-perfil.page";
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -34,6 +35,9 @@ const routes: Routes = [
   },
   {
     path: 'registroUsuario', component : RegistroUsuarioPage
+  },
+  {
+    path: 'subirImagenPerfil', component : SubirImagenPerfilPage
   }
 ];
 

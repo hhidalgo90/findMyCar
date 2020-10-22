@@ -1,0 +1,35 @@
+
+
+<ion-content>
+  <div style="height : 10%"></div>
+
+  <div class="espaciador ion-text-center">
+        <ion-card>
+            <ion-card-header>
+              <ion-card-title>Ya casi terminas!!</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-card-subtitle>Elije la foto que mas te guste para completar tu perfil.</ion-card-subtitle>
+            </ion-card-content>
+          </ion-card>
+  </div>
+    <ion-card button = "true" mode="ios" type = "button" (click) = "adjuntarImagen(1)">
+            <img src="../../assets/camara.png"/>
+      </ion-card>
+
+      <ion-card button = "true" mode="ios" type = "button" (click) = "adjuntarImagen(0)">
+          <img src="../../assets/galeria.png"/>
+      </ion-card>
+
+      <div class="espaciador">
+      <ion-grid>
+          <ion-row>
+            <ion-col class ="ion-text-right">
+              <ion-button (click)="irMenuUsuario()" *ngIf="activarBtn" expand = "block">Continuar</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+
+
+</ion-content>
