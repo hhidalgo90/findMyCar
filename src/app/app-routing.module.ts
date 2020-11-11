@@ -6,6 +6,7 @@ import { MenuUsuarioLogueadoPage } from './menu-usuario-logueado/menu-usuario-lo
 import { HistorialEstacionamientosPage } from './historial-estacionamientos/historial-estacionamientos.page';
 import { RegistroUsuarioPage } from './registro-usuario/registro-usuario.page';
 import { SubirImagenPerfilPage } from "./subir-imagen-perfil/subir-imagen-perfil.page";
+import { DatosPersonalesPage } from "./datos-personales/datos-personales.page";
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -38,6 +39,9 @@ const routes: Routes = [
   },
   {
     path: 'subirImagenPerfil', component : SubirImagenPerfilPage
+  },
+  {
+    path: 'datosPersonales',component : DatosPersonalesPage
   }
 ];
 

@@ -35,9 +35,10 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { HttpClient, HttpClientModule} from '@angular/common/http';
 import { Camera } from '@ionic-native/camera/ngx';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { DatosPersonalesPage } from "./datos-personales/datos-personales.page";
 
 @NgModule({
-  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage, SubirImagenPerfilPage],
+  declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage, SubirImagenPerfilPage, DatosPersonalesPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig), HttpClientModule ],

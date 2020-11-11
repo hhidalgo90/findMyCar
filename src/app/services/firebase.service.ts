@@ -5,6 +5,8 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentData } from 'angularfire2/firestore';
 import { formatDate } from '@angular/common';
+import { HTTP } from '@ionic-native/http/ngx';
+import { HttpResponse } from '@angular/common/http';
 
 
 @Injectable({
@@ -13,25 +15,20 @@ import { formatDate } from '@angular/common';
 export class FirebaseService {
   coleccionEstacionamientos : AngularFirestoreCollection<any[]>;
   datosUsuario : AngularFirestoreDocument<DocumentData>;
-  constructor(private firestore: AngularFirestore) { }
+  urlImagen : any;
+  constructor(private firestore: AngularFirestore, private http: HTTP) { }
 
 
   registrarUsuario(nombre: string, edad : number,  emailUser: string, sexo : number, passUser : string): Promise<any>{
     console.log("[FirebaseService] [registrarUsuario] " + emailUser + " " + passUser);
-   /*this.guardarImagenFirebase(imagenPerfil).then(resp => {
-      console.log("[FirebaseService] [registrarUsuario] Despues de guardar imagen en firebase");      
-      console.log(resp);
-    }).catch(error => {
-      console.error("[registrarUsuario] Error al guardar imagen en firebase.");
-      console.error(error);
-    });*/
+    let idImagen = "";
 
     return firebase.auth().createUserWithEmailAndPassword(emailUser, passUser)
     .then((newUserCredential: firebase.auth.UserCredential) => {
       firebase
         .firestore()
         .doc(`/usuariosRegistrados/${newUserCredential.user.uid}`)
-        .set({ nombre, edad, emailUser, sexo });
+        .set({ nombre, edad, emailUser, sexo, idImagen });
         return newUserCredential;
     })
     .catch(error => {
@@ -39,57 +36,6 @@ export class FirebaseService {
       throw new Error(error);
     });
   }
-
-  guardarImagenFirebase(imagenPerfil : any) : Promise<any> {
-    console.log("[FirebaseService] [guardarImagenFirebase] Inicio: " + imagenPerfil);
-
-    let idRandom = this.firestore.createId();
-    
-    return new Promise<any>((resolve, reject) => {
-      let storageRef = firebase.storage().ref();
-      console.log("[FirebaseService] [guardarImagenFirebase] storageRef: ");
-      console.log(storageRef);
-      
-      let imageRef = storageRef.child('image').child(idRandom);
-      console.log("[FirebaseService] [guardarImagenFirebase] imageRef: ");
-      console.log(imageRef);
-
-      imageRef.putString(imagenPerfil).then(resp => {
-        console.log(resp);
-      
-      }).catch(error => {
-        console.error("[FirebaseService] [guardarImagenFirebase] Error al subir imagen a firebase");        
-        console.error(error);
-      });
-
-    /* this.encodeImageUri(imagenPerfil, function(image64){
-        imageRef.putString(image64, 'data_url')
-        .then(snapshot => {
-          snapshot.ref.getDownloadURL()
-          .then(res => resolve(res))
-        }, err => {
-          reject(err);
-        })
-      })*/
-      console.log("[FirebaseService] [guardarImagenFirebase] Fin: ");
-    });
-
-  }
-
-  encodeImageUri(imageUri, callback) {
-    var c = document.createElement('canvas');
-    var ctx = c.getContext("2d");
-    var img = new Image();
-    img.onload = function () {
-      var aux:any = this;
-      c.width = aux.width;
-      c.height = aux.height;
-      ctx.drawImage(img, 0, 0);
-      var dataURL = c.toDataURL("image/jpeg");
-      callback(dataURL);
-    };
-    img.src = imageUri;
-  };
 
   loginUser(email: string, password: string ): Promise<firebase.auth.UserCredential> {
     return firebase.auth().signInWithEmailAndPassword(email, password);
@@ -165,5 +111,90 @@ obtenerDatosUsuario():  AngularFirestoreDocument<DocumentData>{
     console.log("user null");  
   }
 }
+
+guardarImagenFirebase(imagenPerfil : any) : Promise<any> {
+  console.log("[FirebaseService] [guardarImagenFirebase] Inicio: " + imagenPerfil);
+
+  let idRandom = this.firestore.createId();
+  
+  return new Promise<any>((resolve, reject) => {
+    let storageRef = firebase.storage().ref();
+    console.log("[FirebaseService] [guardarImagenFirebase] storageRef: ");
+    console.log(storageRef);
+    
+    let imageRef = storageRef.child('image').child(idRandom);
+    console.log("[FirebaseService] [guardarImagenFirebase] imageRef: ");
+    console.log(imageRef);
+
+    imageRef.putString(imagenPerfil).then(resp => {
+      console.log(resp);
+      this.actualizarUsuario(idRandom).then(resp => {
+        console.log("[irMenuUsuario] Despues de actualizar usuario");
+      }).catch(error =>{
+        console.error(error);      
+      });
+      resolve(resp);
+    
+    }).catch(error => {
+      console.error("[FirebaseService] [guardarImagenFirebase] Error al subir imagen a firebase");        
+      reject(console.error(error));
+    });
+    console.log("[FirebaseService] [guardarImagenFirebase] Fin: ");
+  });
+
+}
+  actualizarUsuario(idImagen: String): Promise<any> {
+    console.log("[actualizarUsuario] idImagen" + idImagen);
+    console.log(firebase.auth().currentUser.uid);
+    
+    return new Promise<any>((resolve, reject) => {
+      
+      return firebase.firestore().collection("usuariosRegistrados").doc(`${firebase.auth().currentUser.uid}`).update(
+        {idImagen}
+        ).then(resp => {
+      console.log("[actualizarUsuario] Despues de actualizar imagen user: ");
+      console.log(resp);
+      resolve(resp);
+      
+      
+    }).catch(error =>{
+      console.error("[actualizarUsuario] Error actualizar usuario: " + error);
+      reject(error);
+      
+    });
+  });
+    
+
+  }
+
+
+obtenerImagenFirebase(idImagen : any) : Promise<any> {
+  console.log("[FirebaseService] [obtenerImagenFirebase] Inicio: " + idImagen);
+  let url= "";
+  return new Promise( (resolve, reject) => { 
+    
+    firebase.storage().ref("image/"+idImagen).getDownloadURL().then(resp => {
+      console.log(resp);
+      url = resp;
+      console.log(url);
+      
+
+      this.http.get(url, {}, {})
+        .then(data => {
+          this.urlImagen = data.data;
+
+            if (data) {
+              console.log(data.status);
+              data.url = url;
+              resolve(data);
+            } else {
+              reject(console.error("[FirebaseService] [obtenerImagenFirebase] Error al obtener imagen"));
+            }
+
+        });      
+     });
+});
+}
+
 
 }

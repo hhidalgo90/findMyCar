@@ -24,7 +24,7 @@ export class AppComponent {
   [    
     {
       title : "Mis datos",
-      url   : "/datos-personales",
+      url   : "/datosPersonales",
       icon  : "contacts"
     },
   ]
@@ -142,7 +142,9 @@ export class AppComponent {
     this.sexoUsuario = +window.sessionStorage.getItem("sexoUsuarioLogueado");
     console.log("datos usuario logueado");
     
-    if(this.sexoUsuario == 1){ //1 = hombre
+    if(window.sessionStorage.getItem("imagenUsuario") != null){
+      this.imagen = window.sessionStorage.getItem("imagenUsuario");
+    }else if(this.sexoUsuario == 1){ //1 = hombre
       this.imagen = "../../assets/avatar/hombre.jpg";
     }else{
       this.imagen = "../../assets/avatar/mujer.jpg";

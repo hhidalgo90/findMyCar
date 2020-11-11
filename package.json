@@ -33,7 +33,7 @@
     "@ionic-native/firebase-authentication": "^5.22.0",
     "@ionic-native/firebase-messaging": "^5.23.0",
     "@ionic-native/geolocation": "^5.18.0",
-    "@ionic-native/http": "^5.26.0",
+    "@ionic-native/http": "^5.29.0",
     "@ionic-native/image-picker": "^5.29.0",
     "@ionic-native/insomnia": "^5.25.0",
     "@ionic-native/native-geocoder": "^5.18.0",
@@ -130,9 +130,7 @@
       "cordova-sms-plugin": {},
       "cordova-plugin-sim": {},
       "cordova-plugin-android-permissions": {},
-      "cordova-plugin-advanced-http": {
-        "OKHTTP_VERSION": "3.10.0"
-      },
+      "cordova-plugin-advanced-http": {},
       "cordova-plugin-file": {},
       "cordova-plugin-camera": {},
       "cordova-plugin-telerik-imagepicker": {
