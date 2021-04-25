@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseService } from '../services/firebase.service';
+import { WebSocketService } from '../services/web-socket.service';
 
 @Component({
   selector: 'app-menu-usuario-logueado',
@@ -13,8 +14,14 @@ export class MenuUsuarioLogueadoPage implements OnInit {
   datosUsuario : any;
   urlImagen : any;
   imagenBase64: any;
+  input : any;
 
-  constructor(private route: ActivatedRoute, private router: Router,  private firebaseService : FirebaseService) {
+  message = '';
+  messages = [];
+  currentUser = '';
+  token: string;
+
+  constructor(private route: ActivatedRoute, private router: Router,  private firebaseService : FirebaseService, private webSocketService: WebSocketService) {
     console.log("constructor menu user logeado");
     
     this.route.queryParams.subscribe(params => {
@@ -29,6 +36,7 @@ export class MenuUsuarioLogueadoPage implements OnInit {
    }
 
   ngOnInit() {
+
   }
 
   irHome(){
@@ -71,10 +79,22 @@ export class MenuUsuarioLogueadoPage implements OnInit {
       this.urlImagen = "data:image/jpeg;base64,"+imagen.data;
       window.sessionStorage.setItem("imagenUsuario", this.urlImagen); 
       //this.imagenBase64 = imagen.data;
-    });
-      
-      
+    });      
       // Or inserted into an <img> element:
-      
+  }
+
+  sendMessage() {
+    if (this.input) {
+      this.webSocketService.sendMessage(this.input);
+      this.input = '';
+    }
+  }
+
+  connect(){
+    this.webSocketService.initializeWebSocketConnection();
+  }
+
+  obtenerToken(){
+    this.token = window.sessionStorage.getItem("token");
   }
 }

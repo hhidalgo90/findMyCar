@@ -17,30 +17,19 @@ export class EnviarMensajePushService {
   body : any;
   constructor(private http: HttpClient) { }
 
-  enviarMensajePush() : Observable<any> {
-    console.log("[enviarMensajePush]");
+  enviarMensajePush(latitud : any , longitud : any) {
     let token = window.sessionStorage.getItem("token");
+    console.log("[enviarMensajePush] token " + token);
+    let coordenadas = latitud +','+ longitud
 
-    this.body = {
-      "notification":{
-        "title":"Alerta de robo de vehiculo",
-        "body":"Hemos detectado que tu vehiculo estacionado esta en movimiento, favor revisa",
-        "sound":"default",
-        "icon":"fcm_push_icon"
-      },
-      "data":{
-        "landing_page":"respuestaPush",
-        "price":"$3,000.00"
-      },
-        "to": token,
-        "priority":"high",
-        "restricted_package_name":""
-    }
-    console.log("[enviarMensajePush] Antes de enviar mensaje");
-    return this.http.post('https://fcm.googleapis.com/fcm/send', JSON.stringify(this.body), this.httpOptions).pipe(
-      retry(2),
-      catchError(this.handleError)
-    )
+
+    //this.http.get('http://localhost:8080/stream-sse-mvc/'+coordenadas+'/'+token).subscribe(data => {
+      this.http.get('https://gpscar-d23cb.appspot.com/stream-sse-mvc/'+coordenadas+'/'+token).subscribe(data => {
+
+    console.log(data);
+
+  });
+
   }
 
     // Handle API errors

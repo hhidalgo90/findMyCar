@@ -52,9 +52,7 @@ export class FirebaseService {
   guardarPuntoEstacionamiento(latitud : string , longitud : string, direccion : string): Promise<any>{
     console.log("[FirebaseService] [guardarPuntoEstacionamiento] " + latitud + " " + longitud);
     console.log(firebase.auth().currentUser);
-    let fecha = formatDate(new Date(),'MM/dd/yyyy', 'en');
-    let hora = new Date();
-    let fechaEstacionamiento= fecha + "/" + hora.getHours() + ":" + hora.getMinutes();
+    let fechaEstacionamiento = formatDate(new Date(),'dd/MM/yyyy hh:mm:ss a', 'en');
     let autoEstacionado = true;
     
     if(firebase && firebase.auth().currentUser.uid != null){
@@ -102,7 +100,8 @@ estacionarVehiculo(idEstacionamiento : String) : Promise<any>{
 
 obtenerDatosUsuario():  AngularFirestoreDocument<DocumentData>{
   if(firebase.auth().currentUser && firebase.auth().currentUser.uid != null){
-    console.log(firebase.auth().currentUser.uid);    
+    console.log(firebase.auth().currentUser.uid);
+    window.sessionStorage.setItem("idUser" , firebase.auth().currentUser.uid);
       this.datosUsuario = this.firestore.doc(`/usuariosRegistrados/${firebase.auth().currentUser.uid}`);
       console.log("despue de obtener datos del usuario a firebase");      
       console.log(this.datosUsuario);
@@ -171,7 +170,7 @@ guardarImagenFirebase(imagenPerfil : any) : Promise<any> {
 obtenerImagenFirebase(idImagen : any) : Promise<any> {
   console.log("[FirebaseService] [obtenerImagenFirebase] Inicio: " + idImagen);
   let url= "";
-  return new Promise( (resolve, reject) => { 
+  return new Promise( (resolve, reject) => {
     
     firebase.storage().ref("image/"+idImagen).getDownloadURL().then(resp => {
       console.log(resp);

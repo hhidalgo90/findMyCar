@@ -61,6 +61,14 @@ export class AppComponent {
         console.log("despues de inciar firebase storage");
         console.log(storage);
       }
+
+      console.log("antes de obtener token");
+      
+      this.fcm.getToken().then(token => {
+        console.log(token);
+        window.sessionStorage.setItem("token" , token);
+        
+      });  
       this.firebaseMessaging.subscribe("all");
       if(this.device.platform != null){
       this.device.platform == "Android"
@@ -91,6 +99,11 @@ export class AppComponent {
       console.log(message);      
     });
 
+    this.firebaseMessaging.onBackgroundMessage().subscribe(message => {
+      console.log("onBackgroundMessage");      
+      console.log(message);      
+    });
+
   }
   initializeFirebaseIOS() {
     console.log("PUSHER IOS subscribe");
@@ -98,6 +111,10 @@ export class AppComponent {
     this.firebaseMessaging.requestPermission()
       .then(() => {
         this.firebaseMessaging.getToken().then(token => {
+          console.log("TOKEEEEEN");
+          
+          console.log(token);
+          
           window.sessionStorage.setItem("token" , token);
         });
         this.firebaseMessaging.onTokenRefresh().subscribe(token => {});

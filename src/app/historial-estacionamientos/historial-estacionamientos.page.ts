@@ -87,6 +87,8 @@ export class HistorialEstacionamientosPage implements OnInit {
    * @param listaPreguntas
    */
   ordenarHistorial(historialEstacionamientos: Object[]): any {
+    console.log("[ordenarHistorial] Inicio");
+    
     if (
       !historialEstacionamientos ||
       historialEstacionamientos === undefined ||
@@ -103,6 +105,8 @@ export class HistorialEstacionamientosPage implements OnInit {
         return 0;
       }
     });
+    console.log("[ordenarHistorial] Fin");
+
     return historialEstacionamientos;
   }
 

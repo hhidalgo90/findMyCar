@@ -17,7 +17,8 @@ import { Sim } from '@ionic-native/sim/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { EnviarMensajePushService } from '../services/enviar-mensaje-push.service';
 import { LoadingServiceService } from '../services/loading-service.service'
-import { Logs } from 'selenium-webdriver';
+import { WebSocketService } from '../services/web-socket.service';
+import { HttpService } from '../services/http.service';
 
 
 declare var google;
@@ -71,8 +72,8 @@ export class VerAutoPage extends EstilosMapaService {
     private sms: SMS,
     private androidPermissions: AndroidPermissions,
     private enviarMensajePushService : EnviarMensajePushService,
-    private loadingService : LoadingServiceService,
-    private renderer: Renderer2
+    private webSocketService : WebSocketService,
+    private httpService : HttpService
   ) {
       super();
       this.mostrarBtnLlegar = false;
@@ -113,8 +114,8 @@ export class VerAutoPage extends EstilosMapaService {
     }
 
   ngOnInit() {
-    this.loadMap();
     this.esUsuarioLogueado = window.sessionStorage.getItem("usuarioLogueado");
+    this.loadMap();    
   }
 
   loadMap() {    
@@ -221,7 +222,7 @@ export class VerAutoPage extends EstilosMapaService {
         results[0].geometry.location.lat(),
         results[0].geometry.location.lng()
       );        
-      this.mostrarEstacionar = true;
+      //this.mostrarEstacionar = true;
       this.mostrarCentrar = true;
       
       }
@@ -391,10 +392,11 @@ export class VerAutoPage extends EstilosMapaService {
         console.log(results[0].formatted_address);        
         this.imagen = "../../assets/icon/car.png";
         this.agregarMarcadorAuto(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+        console.log("Antes de guardar estcionamiento en http");
+        this.httpService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng(), results[0].formatted_address);
 
         this.firebaseService.guardarPuntoEstacionamiento(results[0].geometry.location.lat() , results[0].geometry.location.lng(), results[0].formatted_address).then(resp=>{
           console.log("ubicacion vehiculo guardado con exito en firebase");
-          this.activarSeguimiendoSegundoplano();
           window.sessionStorage.getItem("idEstacionamiento");
           console.log(window.sessionStorage.getItem("idEstacionamiento"));
           
@@ -403,30 +405,20 @@ export class VerAutoPage extends EstilosMapaService {
           console.log("ocurrio un error al guardar ubicacion del vehiculo en firebase: " + error);
           
         });
+        this.enviarMensajePushService.enviarMensajePush(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+        //this.enviarUbicacionWebSocket(results[0]);
         
+        //ESTE CODIGO SERVIA PARA CREAR OBSERVABLE QUE CONSULTE POR LA DISTANCIA ENTRE LOS PUNTOS
         // Call subscribe() to start listening for updates.
-        const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0], this.enviarMensajePushService).subscribe({
+        /*const locationsSubscription = this.obtenerDistanciaEntrePuntos(results[0], this.enviarMensajePushService).subscribe({
           next(distanciaEntrePuntos) {
             console.log("Distancia entre los puntos: ");
             console.log(distanciaEntrePuntos);
-            
-            /*if(distanciaEntrePuntos > 0.1){
-              //alert("te estan pelando el toco");
-              this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
-                console.log("enviarMensajePush");      
-                console.log(resp);      
-              });
-              locationsSubscription.unsubscribe();
-              if(this.esLogueado){
-                console.log("estoy logueado");
-                
-              }
-            }*/
           },
           error(msg) {
             console.log("Error Getting Location: ", msg);
           }
-        });
+        }); */
       }
     );
     this.mostrarMarcador = false;
@@ -463,7 +455,6 @@ export class VerAutoPage extends EstilosMapaService {
       let idEstacionamiento = (this.idItemEstacionar!= null && this.idItemEstacionar != "") ? this.idItemEstacionar : window.sessionStorage.getItem("idEstacionamiento");
       this.firebaseService.estacionarVehiculo(idEstacionamiento).then(async ()=>{
         console.log("Auto recuperado con exito");
-        //this.sendSms();
         this.idItemEstacionar = "";
         const toast = await this.toastController.create({
           message: 'Vehiculo recuperado con exito.',
@@ -472,10 +463,11 @@ export class VerAutoPage extends EstilosMapaService {
           color: "success"
         });
         toast.present();
-        this.desactivarSeguimiendoSegundoplano();
       })
       .catch(async error=>{
         console.error("Ocurrio un error al recuperar el auto");
+        console.log(error);
+        
         const toast = await this.toastController.create({
           message: 'Ocurrio un error al recuperar el vehiculo.',
           duration: 2000,
@@ -521,13 +513,7 @@ const locations = new Observable((observer) => {
   const watchId  = this.geolocation.watchPosition().subscribe(position => {
   console.log(position.coords.longitude + ' ' + position.coords.latitude);
   let distanciaEntrePuntos = getDistanceFromLatLonInKm(position.coords.latitude,position.coords.longitude ,ubicacionVehiculo.geometry.location.lat(),ubicacionVehiculo.geometry.location.lng());
-  if(distanciaEntrePuntos > 0.1){
-    //alert("te estan pelando el toco");
-    this.enviarMensajePushService.enviarMensajePush().subscribe(resp => {
-      console.log("enviarMensajePush");      
-      console.log(resp);      
-    });
-    }
+
   observer.next(distanciaEntrePuntos);
 });
 
@@ -655,29 +641,38 @@ sendSms(){
   });
 }
 
-
-activarSeguimiendoSegundoplano(){
-  console.log("[activarSeguimiendoSegundoplano] Inicio");
-  
-  window.app.backgroundGeolocation.start();
-}
-
-desactivarSeguimiendoSegundoplano(){
-  console.log("[desactivarSeguimiendoSegundoplano] Inicio");
-  
-  window.app.backgroundGeolocation.stop();
-}
-
 touchstart(event){
   console.log("touch start");
-  
+  this.mostrarEstacionar = true;
   console.log(event);
-  
+  console.log(this.botonEstacionar);
 }
 
 touchend(event){
   console.log("touch end");
   console.log(event);
+  console.log(this.botonEstacionar);
   this.cargarUbicacion();
+}
+
+
+enviarUbicacionWebSocket(coordenadas: any): any {
+  console.log("[enviarUbicacionWebSocket] Inicio ");
+  console.log(coordenadas);
+  
+  
+  this.webSocketService.initializeWebSocketConnection().then(resp =>{
+    console.log("[enviarUbicacionWebSocket] Conectado a webSocket ");
+
+    let latLng = coordenadas.geometry.location.lat() + "," + coordenadas.geometry.location.lng();
+    
+    this.webSocketService.sendMessage(latLng);
+
+    
+    
+  }).catch(error => {
+    console.error(error);    
+  });
+  console.log(this.webSocketService.msg);
 }
 }

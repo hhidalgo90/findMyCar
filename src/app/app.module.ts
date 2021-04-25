@@ -36,12 +36,23 @@ import { HttpClient, HttpClientModule} from '@angular/common/http';
 import { Camera } from '@ionic-native/camera/ngx';
 import { ImagePicker } from '@ionic-native/image-picker/ngx';
 import { DatosPersonalesPage } from "./datos-personales/datos-personales.page";
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const headers = {
+  'Content-Type': 'application/json; charset=UTF-8',
+  'Accept': '*/*',
+  'X-Requested-With': 'XMLHttpRequest',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Origin' : '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS'
+};
+const config: SocketIoConfig = { url: 'http://localhost:8090', options: {} };
 
 @NgModule({
   declarations: [AppComponent, MenuPage, VerAutoPage, ModalComoLlegarPage, ModalRegistresePage, MenuUsuarioLogueadoPage, HistorialEstacionamientosPage, RegistroUsuarioPage, SubirImagenPerfilPage, DatosPersonalesPage],
   entryComponents: [ModalComoLlegarPage, ModalRegistresePage],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig), HttpClientModule ],
+    AngularFireModule.initializeApp(environment.firebaseConfig), HttpClientModule, SocketIoModule.forRoot(config) ],
   providers: [
     StatusBar,
     SplashScreen,
